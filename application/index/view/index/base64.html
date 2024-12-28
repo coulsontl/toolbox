@@ -42,10 +42,14 @@
                                 </div>
                                 <div class="form-group">
                                     <div class="col-sm-12 text-center">
-                                        <input type="button" onclick="base64_encode();" id="conv" value="Base64加密" class="btn btn-success">
-                                        <input type="button" onclick="base64_decode();" id="res" value="Base64解密" class="btn btn-success">
-                                        <span id="copyallcode" class="btn btn-default" data-clipboard-target="#result">复制</span>
-                                        <button type="button" id="switchBtn" class="btn btn-primary" style="display:none">↕ 交换</button>
+                                        <input type="button" onclick="base64_encode();" id="conv" value="Base64加密"
+                                            class="btn btn-success">
+                                        <input type="button" onclick="base64_decode();" id="res" value="Base64解密"
+                                            class="btn btn-success">
+                                        <span id="copyallcode" class="btn btn-default"
+                                            data-clipboard-target="#result">复制</span>
+                                        <button type="button" id="switchBtn" class="btn btn-primary"
+                                            style="display:none">↕ 交换</button>
                                         <input type="button" onclick="ClearAll();" value="清空" class="btn btn-default">
                                     </div>
                                 </div>
@@ -62,7 +66,7 @@
                         <p>base64在线解码工具为您提供base64编码,base64在线解码,base64加密解密,对字符串进行Base64格式的加密处理,对已加密Base64在线解码解密显示为明文。Base64是比较普通的在线加密算法,在解决中文乱码时,对中文进行不同方式的编码可有效避免中文乱码。本站不会记录您的任何信息,请放心使用。
                         </p>
                         <h4 style="color: #66be8c; margin-top:20px;">Base64索引表</h4>
-                        <p>Base64编码是使用64个可打印ASCII字符（A-Z、a-z、0-9、+、/）将任意字节序列数据编码成ASCII字符串，另有&ldquo;=&rdquo;符��用作后缀用途。</p>
+                        <p>Base64编码是使用64个可打印ASCII字符（A-Z、a-z、0-9、+、/）将任意字节序列数据编码成ASCII字符串，另有“=”符号用作后缀用途。</p>
                         <div class="panel panel-success text-center">
                             <table class="table table-hover table-bordered table-striped">
                                 <tbody>
@@ -241,7 +245,7 @@
                         </div>
                         <p>&nbsp;&nbsp;Base64将输入字符串按字节切分，取得每个字节对应的二进制值（若不足8比特则高位补0），然后将这些二进制数值串联起来，再按照6比特一组进行切分（因为2^6=64），最后一组若不足6比特则末尾补0。将每组二进制值转换成十进制，然后在上述表格中找到对应的符号并串联起来就是Base64编码结果。
                         </p>
-                        <p>&nbsp;&nbsp;Base64可用于任意数据的底层二进制数据编码，以应用于���能传输ASCII字符的场合。不过最常用于文本数据的处理传输，例如在MIME格式的电子邮件中，Base64可以用来编码邮件内容，方便在不同语言计算机间传输而不乱码，注意是传输而不是显示，例如在西欧地区计算机上使用utf-8编码即可正常显示中文（安装有对应字库），但是它未必能正常传输中文，这时转换为Base64便无此顾虑。
+                        <p>&nbsp;&nbsp;Base64可用于任意数据的底层二进制数据编码，以应用于只能传输ASCII字符的场合。不过最常用于文本数据的处理传输，例如在MIME格式的电子邮件中，Base64可以用来编码邮件内容，方便在不同语言计算机间传输而不乱码，注意是传输而不是显示，例如在西欧地区计算机上使用utf-8编码即可正常显示中文（安装有对应字库），但是它未必能正常传输中文，这时转换为Base64便无此顾虑。
                         </p>
                         <p>Base64编码若无特别说明，通常约定非ASCII字符按照UTF-8字符集进行编码处理。</p>
                     </div>
@@ -256,24 +260,23 @@
     <script src="/static/script/pcjs/crypto-js.js" type="text/javascript"></script>
     <script src="/static/script/pcjs/base64csvtojson.js" type="text/javascript"></script>
     <script src="/static/script/hightout.js"></script>
-    <script
-        type="text/javascript">function base64_encode() { var str = CryptoJS.enc.Utf8.parse(jQuery("#content").val()); var base64 = CryptoJS.enc.Base64.stringify(str); hightout(base64); $("#switchBtn").show(); } function base64_decode() { var words = CryptoJS.enc.Base64.parse(jQuery("#content").val()); hightout(words.toString(CryptoJS.enc.Utf8)); $("#switchBtn").show(); }
+    <script type="text/javascript">function base64_encode() { var str = CryptoJS.enc.Utf8.parse(jQuery("#content").val()); var base64 = CryptoJS.enc.Base64.stringify(str); $("#switchBtn").show(); hightout(base64); } function base64_decode() { var words = CryptoJS.enc.Base64.parse(jQuery("#content").val()); $("#switchBtn").show(); hightout(words.toString(CryptoJS.enc.Utf8)); }
 
-    $(document).ready(function(){
-        // 初始化时隐藏结果容器和交换按钮
-        $("#result").parent().hide();
-        $("#switchBtn").hide();
-        
-        $("#switchBtn").click(function(){
-            var currentResult = $("#result").text();
-            var currentInput = $("#content").val();
-            
-            // 交换内容
-            $("#content").val(currentResult);
-            $("#result").empty();
-            hightout(currentInput);
+        $(document).ready(function () {
+            // 初始化时隐藏结果容器和交换按钮
+            $("#result").parent().hide();
+            $("#switchBtn").hide();
+
+            $("#switchBtn").click(function () {
+                var currentResult = $("#result").text();
+                var currentInput = $("#content").val();
+
+                // 交换内容
+                $("#content").val(currentResult);
+                $("#result").empty();
+                hightout(currentInput);
+            });
         });
-    });
     </script>
     {include file="nav" /}
     {include file="link" /}
