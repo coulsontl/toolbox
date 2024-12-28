@@ -9,11 +9,11 @@
 
 ```bash
 docker run -d --restart always \
-	--name tools \
+	--name toolbox \
 	-p 8080:80 \
 	-e username=admin \
 	-e password=admin \
-	cleverest/toolbox
+	coulsontl/toolbox
 ```
 
 
@@ -34,9 +34,9 @@ docker run -d --restart always \
 version: '3'
 
 services:
-  tools:
-    image: cleverest/toolbox
-    container_name: tools
+  toolbox:
+    image: coulsontl/toolbox
+    container_name: toolbox
     restart: unless-stopped
     ports:
       - "8080:80"
