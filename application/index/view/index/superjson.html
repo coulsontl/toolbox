@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>JSON工具</title>
+  <!-- 引入React和ReactDOM -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <!-- 引入构建文件 -->
+  <script src="/static/script/superjson/json-tools.umd.js"></script>
+</head>
+<body>
+  <div id="json-tools-root"></div>
+  <script>
+    // 等待文档和脚本完全加载
+    window.addEventListener('load', function() {
+      try {
+        console.log('Window JSONTools:', window.JSONTools); // 调试用
+        if (typeof window.JSONTools === 'undefined') {
+          throw new Error('JSONTools 未正确加载');
+        }
+        if (typeof window.JSONTools.mount !== 'function') {
+          throw new Error('JSONTools.mount 不是一个函数');
+        }
+        window.JSONTools.mount(document.getElementById('json-tools-root'));
+      } catch (error) {
+        console.error('挂载 JSONTools 时发生错误:', error);
+      }
+    });
+  </script>
+</body>
+</html>

@@ -21,3 +21,4 @@ tests/
 tmp/
 # 忽略运行时文件
 runtime/
+react/
