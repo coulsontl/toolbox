@@ -1,0 +1,23 @@
+# 忽略 node_modules 目录
+node_modules/
+# 忽略 vendor 目录（Composer 依赖目录）
+vendor/
+# 忽略日志文件
+*.log
+# 忽略缓存文件
+cache/
+# 忽略 IDE 配置文件
+.idea/
+.vscode/
+# 忽略 Git 相关文件
+.git/
+.gitignore
+# 忽略 Docker 相关文件（如果需要）
+Dockerfile
+.dockerignore
+# 忽略测试文件
+tests/
+# 忽略临时文件
+tmp/
+# 忽略运行时文件
+runtime/
