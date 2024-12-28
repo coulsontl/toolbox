@@ -91,6 +91,7 @@ export default () => {
                     const jState = rh.getActualValueInState()
                     const rawVal = jState.inputJSON
                     if (_.isEmpty(rawVal)) {
+                        console.log('输入内容为空，请先提供JSON数据')
                         AlertUtils.alertErr('输入内容为空，请先提供JSON数据')
                         return
                     }
@@ -106,6 +107,7 @@ export default () => {
 
                     // 依然失败则报错
                     if (!parsedJSON) {
+                        console.log('请检查 JSON 格式是否正确')
                         AlertUtils.alertErr('请检查 JSON 格式是否正确')
                         return
                     }

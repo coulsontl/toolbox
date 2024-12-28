@@ -36,7 +36,7 @@ export default () => {
         // },
     ]
     const activeId = items[0].id
-    const hVal = 'calc(100vh - 85px)'
+    const hVal = 'calc(100vh - 0px)'
     return (
         <Card p={0} withBorder style={{
             minHeight: hVal,
@@ -47,11 +47,9 @@ export default () => {
                     {
                         items.map(x => {
                             return (
-                                <Link to={`/tools/json/${x.id}`}>
-                                    <Tabs.Tab className="h-[35px]" value={x.id} leftSection={<x.icon style={iconStyle} />}>
-                                        {x.name}
-                                    </Tabs.Tab>
-                                </Link>
+                                <Tabs.Tab className="h-[35px]" value={x.id} leftSection={<x.icon style={iconStyle} />}>
+                                    {x.name}
+                                </Tabs.Tab>
                             )
                         })
                     }

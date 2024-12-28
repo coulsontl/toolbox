@@ -1,17 +1,17 @@
 import _ from "lodash"
-import { Toaster, toast } from 'sonner'
+import { toast } from 'sonner'
 
 let msgCtn = 1
 const fn_getMsgCount = () => {
     return ''
     // return `[${msgCtn++}] `
 }
+
 export default {
-    confirm: async (msg: string): Promise<boolean> =>{
+    confirm: async (msg: string): Promise<boolean> => {
         return confirm(msg)
     },
     alertSuccess(msg: any) {
-        // alert("" + _.toString(msg))
         toast.success(fn_getMsgCount() + _.toString(msg))
     },
     alertInfo(msg: any) {

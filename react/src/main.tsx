@@ -5,6 +5,8 @@ import { MantineProvider } from '@mantine/core'
 import { Provider } from 'react-redux'
 import { store } from './store/index'
 import JSONSuperTools from './JSONSuperTools'
+import './index-global.css'
+import { Toaster } from 'sonner'
 
 function mount(el: HTMLElement) {
   const root = createRoot(el)
@@ -13,6 +15,7 @@ function mount(el: HTMLElement) {
       <Provider store={store}>
         <BrowserRouter>
           <MantineProvider>
+            <Toaster position="top-center" richColors />
             <JSONSuperTools />
           </MantineProvider>
         </BrowserRouter>
