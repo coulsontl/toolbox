@@ -54,8 +54,10 @@
                                     <div class="col-sm-12 text-center">
                                         <button type="button" id="encode" class="btn btn-success">UrlEncode编码</button>
                                         <button type="button" id="decode" class="btn btn-success">UrlDecode解码</button>
-                                        <span id="copyallcode" class="btn btn-default" data-clipboard-target="#result">复制结果</span>
-                                        <button type="button" id="switchBtn" class="btn btn-primary" style="display:none">↕ 交换</button>
+                                        <span id="copyallcode" class="btn btn-default"
+                                            data-clipboard-target="#result">复制结果</span>
+                                        <button type="button" id="switchBtn" class="btn btn-primary"
+                                            style="display:none">↕ 交换</button>
                                         <input type="button" onclick="ClearAll();" value="清空" class="btn btn-default">
                                     </div>
                                 </div>
@@ -86,29 +88,29 @@
     <script type="text/javascript">(function () {
             $("#result").parent().hide();
             $("#switchBtn").hide();
-            
+
             $("#encode").on('click', function () {
                 var content = $("#content").val();
-                if(!content) return;
-                
+                if (!content) return;
+
                 $("#result").parent().show();
                 $("#switchBtn").show();
                 hightout(encodeURIComponent(content));
             });
-            
+
             $("#decode").on('click', function () {
                 var content = $("#content").val();
-                if(!content) return;
-                
+                if (!content) return;
+
                 $("#result").parent().show();
                 $("#switchBtn").show();
                 hightout(decodeURIComponent(content));
             });
-            
-            $("#switchBtn").click(function(){
+
+            $("#switchBtn").click(function () {
                 var currentResult = $("#result").text();
                 var currentInput = $("#content").val();
-                
+
                 $("#content").val(currentResult);
                 $("#result").empty();
                 hightout(currentInput);
