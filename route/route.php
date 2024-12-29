@@ -22,7 +22,7 @@ Route::rule('doapi', 'index/api');
 Route::rule('api', 'index/api');
 //重定向 jsonhelper 到 superjson
 Route::rule('formats/jsonhelper/', function(){
-    return redirect('/jsonsuper/');
+    return redirect('/json/');
 });
 //静态页面
 Route::rule('ip/:ip', 'index/index?act=ip')->pattern(['ip' => '.*']);
