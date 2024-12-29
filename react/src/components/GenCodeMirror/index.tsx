@@ -221,7 +221,7 @@ export default (props: GenCodeMirrorProp) => {
         extensions={[
           langPack,
           props.lineWrap ? EditorView.lineWrapping : null,
-          EditorState.tabSize.of(4),
+          EditorState.tabSize.of(2),
         ].filter(x => x != null) as any}
         theme={forgeObj.dark ? monokai : undefined} // githubLight
       />
