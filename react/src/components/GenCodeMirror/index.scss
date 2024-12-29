@@ -7,3 +7,14 @@
 .editor-noscroll .cm-scroller {
   overflow: hidden !important;
 }
+
+// 添加全局样式
+.cm-editor {
+  .cm-content, 
+  .cm-gutter,
+  .cm-line,
+  .cm-scroller {
+    font-size: 15px;
+    font-family: var(--mantine-font-family) !important;
+  }
+}

@@ -2746,7 +2746,7 @@ fieldset:disabled .m-d3ea56bb,
     --button-color: var(--mantine-color-white);
     -webkit-user-select: none;
     user-select: none;
-    font-weight: 600;
+    font-weight: 500;
     position: relative;
     line-height: 1;
     text-align: center;

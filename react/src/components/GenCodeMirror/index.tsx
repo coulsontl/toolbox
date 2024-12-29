@@ -38,6 +38,7 @@ import exportUtils from "../../utils/ExportUtils";
 // console.log('langNames', langs.mysql())
 import { createTheme } from '@uiw/codemirror-themes';
 import { tags as t } from '@lezer/highlight';
+import { EditorState } from '@codemirror/state'
 
 const myTheme = createTheme({
   theme: 'light',
@@ -219,7 +220,8 @@ export default (props: GenCodeMirrorProp) => {
         }}
         extensions={[
           langPack,
-          props.lineWrap ? EditorView.lineWrapping : null
+          props.lineWrap ? EditorView.lineWrapping : null,
+          EditorState.tabSize.of(4),
         ].filter(x => x != null) as any}
         theme={forgeObj.dark ? monokai : undefined} // githubLight
       />

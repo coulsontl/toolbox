@@ -21,7 +21,7 @@ Route::rule('404', 'index/e404');
 Route::rule('doapi', 'index/api');
 Route::rule('api', 'index/api');
 //重定向 jsonhelper 到 superjson
-Route::rule('formats/jsonhelper/', function(){
+Route::rule('formats/jsonhelper', function(){
     return redirect('/json/');
 });
 //静态页面
