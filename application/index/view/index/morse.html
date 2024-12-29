@@ -51,10 +51,11 @@
                                 </div>
                                 <div class="form-group">
                                     <div class="col-sm-12 text-center"><button type="button" class="btn btn-success"
-                                            onclick="encode_morse_zh()">摩尔斯电码加密</button><button type="button"
-                                            class="btn btn-info" onclick="decode_morse_zh()">摩尔斯电码解密</button><span
+                                            onclick="forward()">摩尔斯电码加密</button><button type="button"
+                                            class="btn btn-info" onclick="reverse()">摩尔斯电码解密</button><span
                                             id="copyallcode" class="btn btn-default"
                                             data-clipboard-target="#result">复制结果</span><button type="button"
+                                            id="switchBtn" class="btn btn-primary" style="display:none">↕ 交换</button><button type="button"
                                             class="btn btn-default" onclick="ClearAll()">清空</button></div>
                                 </div>
                                 <div class="form-group">
@@ -296,6 +297,28 @@
     <script src="/static/script/hightout.js"></script>{include file="nav" /}
     {include file="link" /}
     {include file="footer" /}
+    <script type="text/javascript">
+    function forward() {
+        encode_morse_zh();
+        $("#switchBtn").show();
+    }
+    function reverse() {
+        decode_morse_zh();
+        $("#switchBtn").show();
+    }
+    $(document).ready(function () {
+        $("#result").parent().hide();
+        $("#switchBtn").hide();
+
+        $("#switchBtn").click(function () {
+            var currentResult = $("#result").text();
+            var currentInput = $("#content").val();
+            $("#content").val(currentResult);
+            $("#result").empty();
+            hightout(currentInput);
+        });
+    });
+    </script>
 </body>
 
 </html>

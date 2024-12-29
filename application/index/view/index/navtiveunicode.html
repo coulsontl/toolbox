@@ -58,13 +58,15 @@
                                 <div class="form-group">
                                     <div class="col-sm-12 text-center">
                                         <button type="button" id="encode" class="btn btn-success"
-                                            onclick="javascript:Native2Unicode();">Native转Unicode
+                                            onclick="forward();">Native转Unicode
                                         </button>
                                         <button type="button" id="decode" class="btn btn-success"
-                                            onclick="javascript:Unicode2Native();">Unicode转Native
+                                            onclick="reverse();">Unicode转Native
                                         </button>
                                         <span id="copyallcode" class="btn btn-default"
-                                            data-clipboard-target="#result">复制结果</span><input type="button"
+                                            data-clipboard-target="#result">复制结果</span><button type="button"
+                                            id="switchBtn" class="btn btn-primary" style="display:none">↕
+                                            交换</button><input type="button"
                                             onclick="ClearAll();" value="清空" class="btn btn-default">
                                     </div>
                                 </div>
@@ -93,9 +95,54 @@
     <script src="/static/script/hightout.js"></script>
     <script type="text/javascript">
         //Native 转换 Unicode
-        function Native2Unicode() { var a_s = $("#content").val(); var out = ''; if ('' == a_s) { alert('请输入Native字符串'); return; } for (var i = 0; i < $("#content").val().length; i++)out = out + '&#' + a_s.charCodeAt(i) + ';'; hightout(out); }
+        function Native2Unicode() { 
+            var a_s = $("#content").val(); 
+            var out = ''; 
+            if ('' == a_s) { 
+                alert('请输入Native字符串'); 
+                return; 
+            } 
+            for (var i = 0; i < $("#content").val().length; i++)
+                out = out + '&#' + a_s.charCodeAt(i) + ';'; 
+            hightout(out); 
+        }
         //Unicode 转换 Native
-        function Unicode2Native() { var a_s = $("#content").val(); var code = a_s.match(/&#(\d+);/g); var out = ''; if (code == null) { alert('请输入正确的Unicode代码！'); $("#content").focus(); return; } for (var i = 0; i < code.length; i++)out = out + String.fromCharCode(code[i].replace(/[&#;]/g, '')); hightout(out); }
+        function Unicode2Native() { 
+            var a_s = $("#content").val(); 
+            var code = a_s.match(/&#(\d+);/g); 
+            var out = ''; 
+            if (code == null) { 
+                alert('请输入正确的Unicode代码！'); 
+                $("#content").focus(); 
+                return; 
+            } 
+            for (var i = 0; i < code.length; i++)
+                out = out + String.fromCharCode(code[i].replace(/[&#;]/g, '')); 
+            hightout(out); 
+        }
+        
+        function forward() {
+            Native2Unicode();
+            $("#switchBtn").show();
+        }
+        
+        function reverse() {
+            Unicode2Native();
+            $("#switchBtn").show();
+        }
+        
+        $(document).ready(function () {
+            $("#result").parent().hide();
+            $("#switchBtn").hide();
+
+            $("#switchBtn").click(function () {
+                var currentResult = $("#result").text();
+                var currentInput = $("#content").val();
+                $("#content").val(currentResult);
+                $("#result").empty();
+                hightout(currentInput);
+            });
+        });
     </script>
     {include file="nav" /}
     {include file="footer" /}

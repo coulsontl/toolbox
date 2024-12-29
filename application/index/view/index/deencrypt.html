@@ -66,12 +66,14 @@
                                 <div class="form-group">
                                     <div class="col-sm-12 text-center"><input type="text"
                                             class="form-control form-di input-encrypt-txt" id="pwd" title="密钥,可不填"
-                                            placeholder="密钥,可不填" /><input type="button" id="conv" onclick="encrypt();"
+                                            placeholder="密钥,可不填" /><input type="button" id="conv" onclick="forward();"
                                             value="加密" class="btn btn-success"><input type="button" id="res"
-                                            onclick="decrypt();" value="解密" class="btn btn-success"><span
+                                            onclick="reverse();" value="解密" class="btn btn-success"><span
                                             id="copyallcode" class="btn btn-default"
-                                            data-clipboard-target="#result">复制</span><input type="button"
-                                            onclick="resetAll();" value="清空" class="btn btn-default"></div>
+                                            data-clipboard-target="#result">复制</span><button type="button"
+                                            id="switchBtn" class="btn btn-primary" style="display:none">↕
+                                            交换</button><input type="button" onclick="resetAll();" value="清空"
+                                            class="btn btn-default"></div>
                                 </div>
                                 <div class="form-group">
                                     <div class="col-sm-12">
@@ -99,6 +101,28 @@
     <script src="/static/script/hightout.js"></script>{include file="nav" /}
     {include file="link" /}
     {include file="footer" /}
+    <script type="text/javascript">
+        function forward() {
+            encrypt();
+            $("#switchBtn").show(); 
+        }
+        function reverse() { 
+            decrypt();
+            $("#switchBtn").show(); 
+        }
+        $(document).ready(function () {
+            $("#result").parent().hide();
+            $("#switchBtn").hide();
+
+            $("#switchBtn").click(function () {
+                var currentResult = $("#result").text();
+                var currentInput = $("#content").val();
+                $("#content").val(currentResult);
+                $("#result").empty();
+                hightout(currentInput);
+            });
+        });
+    </script>
 </body>
 
 </html>

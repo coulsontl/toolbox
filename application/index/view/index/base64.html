@@ -260,8 +260,18 @@
     <script src="/static/script/pcjs/crypto-js.js" type="text/javascript"></script>
     <script src="/static/script/pcjs/base64csvtojson.js" type="text/javascript"></script>
     <script src="/static/script/hightout.js"></script>
-    <script type="text/javascript">function base64_encode() { var str = CryptoJS.enc.Utf8.parse(jQuery("#content").val()); var base64 = CryptoJS.enc.Base64.stringify(str); $("#switchBtn").show(); hightout(base64); } function base64_decode() { var words = CryptoJS.enc.Base64.parse(jQuery("#content").val()); $("#switchBtn").show(); hightout(words.toString(CryptoJS.enc.Utf8)); }
-
+    <script type="text/javascript">
+        function base64_encode() {
+            var str = CryptoJS.enc.Utf8.parse(jQuery("#content").val()); 
+            var base64 = CryptoJS.enc.Base64.stringify(str); 
+            $("#switchBtn").show(); 
+            hightout(base64);
+        }
+        function base64_decode() { 
+            var words = CryptoJS.enc.Base64.parse(jQuery("#content").val()); 
+            $("#switchBtn").show(); 
+            hightout(words.toString(CryptoJS.enc.Utf8)); 
+        }
         $(document).ready(function () {
             // 初始化时隐藏结果容器和交换按钮
             $("#result").parent().hide();
