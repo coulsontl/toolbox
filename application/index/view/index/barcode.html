@@ -33,13 +33,14 @@
                             <li role="presentation"><a href="/guid/">GUID在线生成</a></li>
                             <li role="presentation"><a href="/htpasswd/">htpasswd生成</a></li>
                             <li role="presentation" class="active"><a href="/barcode/">条形码生成器</a></li>
+                            <li role="presentation"><a href="/qrcode/">二维码生成器</a></li>
                             <li role="presentation"><a href="/ip2long/">IP/数字地址转换</a></li>
                         </ul>
                         <div class="panel">
                             <form id="form1" class="form-horizontal" method="post">
                                 <div class="form-group"><label class="col-sm-2 control-label">条形码内容：</label>
                                     <div class="col-sm-10"><input class="form-control" id="content" name="content"
-                                            type="text" placeholder="请输入条形码内容，例如：toolbox.116025.xyz"
+                                            type="text" placeholder="请输入条形码内容，例如：toolbox.xyz"
                                             autocomplete="off" /></div>
                                 </div>
                                 <div class="form-group"><label class="col-sm-2 control-label"></label>
@@ -57,9 +58,9 @@
                     <div class="alert alert alert-success alert-dismissible">
                         <h4>条形码在线生成工具</h4>
                         <p>条形码经常用于一般商品扫描使用</p>
-                        <p>1，下载条形码：鼠标放在条形码上，右键可另存为图片</p>
+                        <p>1. 下载条形码：鼠标放在条形码上，右键可另存为图片</p>
                         <p>
-                            2，条形码生成器支持ean8,ean13,std25,int25,code11,code39,code93,code128,codabar,msi,datamatrix类型条形码生成
+                            2. 条形码生成器支持ean8,ean13,std25,int25,code11,code39,code93,code128,codabar,msi,datamatrix类型条形码生成
                         </p>
                         <hr />
                         <p>
@@ -81,7 +82,7 @@
     <script type="text/javascript">    $(function () {
             var content = $("#content").val();
             if (content == "") {
-                content = "toolbox.116025.xyz";
+                content = "toolbox.xyz";
                 $("#imgcode").JsBarcode(content);
             }
         });

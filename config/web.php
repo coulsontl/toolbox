@@ -980,5 +980,11 @@ return array (
     'keywords' => 'UBB与HTML互转工具,Html转UBB,Html转UBB,UBB和HTML在线转换工具	',
     'description' => 'UBB与HTML互转工具为您提供在线UBB转为HTML代码,Html转为MarkDown格式,UBB转为Html语言,UBB和Html在线转换,UBB在线转换,Html在线转换工具,UBB转成Html代码,UBB在线转为Html工具,把UBB代码转换成HTML格式的代码/Html代码转换成Ubb论坛格式的代码等	',
   ),
+  'qrcode' => 
+  array (
+    'title' => '二维码在线生成器,QR Code生成工具-在线工具箱',
+    'keywords' => '二维码生成器,二维码在线生成,QR Code生成,二维码制作',
+    'description' => '二维码在线生成器为您提供在线生成二维码,可生成文本、网址、名片等多种类型的二维码,支持自定义二维码大小,生成高清二维码图片,可直接保存使用。二维码具有信息容量大、可靠性高、可被快速识别等特点。',
+  ),
 );
 ?>
