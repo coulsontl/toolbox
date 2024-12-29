@@ -20,6 +20,10 @@ Route::rule('404', 'index/e404');
 //接口
 Route::rule('doapi', 'index/api');
 Route::rule('api', 'index/api');
+//重定向 jsonhelper 到 superjson
+Route::rule('formats/jsonhelper/', function(){
+    return redirect('/superjson/');
+});
 //静态页面
 Route::rule('ip/:ip', 'index/index?act=ip')->pattern(['ip' => '.*']);
 Route::rule(':act','index/index');
