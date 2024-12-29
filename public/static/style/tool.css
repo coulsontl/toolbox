@@ -117,7 +117,7 @@ footer.duomi-page-footer .list-inline a,footer.authenticated-footer .list-inline
 .main-footer .widget .recent-post .recent-single-post .post-title{color:#959595}
 .main-footer .widget .recent-post .recent-single-post .post-title:hover{color:#4ACA6D}
 .main-footer .widget .recent-post .recent-single-post .data{color:#505050}
-.copyright{font-size: 13px;text-align: center;color: #666666;padding-top: 10px;padding-bottom: 10px;margin-bottom: 50px;}
+.copyright{font-size: 13px;text-align: center;color: #666666;padding-top: 10px;padding-bottom: 10px;margin-bottom: 10px;}
 .copyright span{margin:0 .5em}
 .copyright a{color:#666666}
 #Clientid .table>thead>tr>th, .table>tbody>tr>th, .table>tfoot>tr>th, .table>thead>tr>td, .table>tbody>tr>td, .table>tfoot>tr>td {padding: 8px;line-height: 2;vertical-align: top;border-top: 1px solid #ddd;}

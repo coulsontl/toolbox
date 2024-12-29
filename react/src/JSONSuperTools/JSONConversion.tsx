@@ -91,7 +91,6 @@ export default () => {
                     const jState = rh.getActualValueInState()
                     const rawVal = jState.inputJSON
                     if (_.isEmpty(rawVal)) {
-                        console.log('输入内容为空，请先提供JSON数据')
                         AlertUtils.alertErr('输入内容为空，请先提供JSON数据')
                         return
                     }
@@ -107,8 +106,11 @@ export default () => {
 
                     // 依然失败则报错
                     if (!parsedJSON) {
-                        console.log('请检查 JSON 格式是否正确')
                         AlertUtils.alertErr('请检查 JSON 格式是否正确')
+                        const newval = jsonmetautils.beautify(rawVal)
+                        rh.updateNonPState({
+                            inputJSON: newval
+                        })
                         return
                     }
 
@@ -321,6 +323,10 @@ export default () => {
                     <Title order={6}>更多操作</Title>
                 </div>
                 <div className="mt-2  " >
+                    <Button className="mr-1 mt-1" size='xs' color='green' onClick={() => {
+                        clipboard.copy(rh.npState?.inputJSON)
+                        AlertUtils.alertSuccess('JSON数据已复制到剪贴板')
+                    }}>复制结果</Button>
                     <Button size='xs' onClick={() => {
                         const str = `{
     "name": "工具箱",
@@ -342,36 +348,32 @@ export default () => {
                         rh.updateNonPState({
                             inputJSON: str
                         })
-                    }} className="mr-1 mt-1">使用JSON示例</Button>
+                    }} className="mr-1 mt-1" variant="outline">使用JSON示例</Button>
                     <Button className="mr-1 mt-1" size='xs' color='gray' onClick={() => {
                         rh.updateNonPState({
                             inputJSON: ''
                         })
                     }} variant="outline" >清空文本框</Button>
-                    <Button className="mr-1 mt-1" size='xs' color='green' onClick={() => {
-                        clipboard.copy(rh.npState?.inputJSON)
-                        AlertUtils.alertSuccess('JSON数据已复制到剪贴板')
-                    }}>复制结果</Button>
                     <Button className="mr-1 mt-1" size='xs' onClick={() => {
                         js_export_trigger({
                             saveValue: rh.npState?.inputJSON,
                             filename: `mdgjx.json`
                         })
-                    }} color='violet'>导出结果</Button>
+                    }} color='violet' variant="outline">导出结果</Button>
                 </div>
                 <div className="mt-2 space-x-1">
                 </div>
             </div >
 
-            <div className="mt-4">
+            {/* <div className="mt-4">
                 <div className="">
                     <Title order={6}>关于本工具</Title>
                 </div>
                 <div className="text-xs">
                     JSON超级工具涵盖JSON格式化、压缩、校验、转义、去转义、Base64编解码等实用功能，且兼容JSON5格式，可以帮助您快速处理JSON数据。
                 </div>
-            </div>
-            <div className="mt-4">
+            </div> */}
+            {/* <div className="mt-4">
                 <div className="">
                     <Title order={6}>工具特色</Title>
                 </div>
@@ -379,7 +381,38 @@ export default () => {
                     <Badge color="indigo" className="mt-2" >中文字符修复</Badge>
                     <Badge color="cyan" className="mt-2" >JSON5支持</Badge>
                 </div>
-            </div>
+            </div> */}
+            {
+                rh.npState?.errorReason.title != '' ? <>
+                    <div className="mt-2">
+                        <Alert p={5} variant="light" color="red" title={
+                            rh.npState?.errorReason.title
+                        } icon={
+                            <IconInfoCircle />
+                        }>
+                            <p className="font-mono ">{_.split(rh.npState?.errorReason.content, '\n').map(x => <div>{x}</div>)}</p>
+                            <p className="mt-2 space-x-2">
+                                {/* <Button size='compact-xs' color='green' onClick={() => {
+                                    rh.updateNonPState({
+                                        errorReason: {
+                                            title: '',
+                                            content: ''
+                                        }
+                                    })
+                                }}>修复</Button> */}
+                                <Button size='compact-xs' variant="outline" color='gray' onClick={() => {
+                                    rh.updateNonPState({
+                                        errorReason: {
+                                            title: '',
+                                            content: ''
+                                        }
+                                    })
+                                }}>关闭</Button>
+                            </p>
+                        </Alert>
+                    </div>
+                </> : ''
+            }
         </Card >
     </div >
 }

@@ -1,7 +1,7 @@
 import React from 'react';
 import LoadableWrapper from "../components/LoadableWrapper";
 import { Card, Tabs, rem } from "@mantine/core"
-import { IconTransformFilled } from "@tabler/icons-react"
+import { IconTransformFilled, IconHome } from "@tabler/icons-react"
 import { Route, Switch, useHistory } from "react-router";
 import { Link } from "react-router-dom";
 import JSONConversion from './JSONConversion'
@@ -36,14 +36,25 @@ export default () => {
         // },
     ]
     const activeId = items[0].id
-    const hVal = 'calc(100vh - 0px)'
+    const hVal = 'calc(100vh - 110px)'
     return (
         <Card p={0} withBorder style={{
             minHeight: hVal,
             height: hVal
         }}>
             <Tabs defaultValue={activeId} className="h-full flex flex-col">
-                <Tabs.List>
+                {/* <Tabs.List>
+                    <Tabs.Tab
+                        className="h-[35px]"
+                        value={'home'}
+                        leftSection={<IconHome style={iconStyle} />}
+                        onClick={() => {
+                            hist.push('/')
+                            window.location.reload()
+                        }}
+                    >
+                        回到首页
+                    </Tabs.Tab>
                     {
                         items.map(x => {
                             return (
@@ -53,7 +64,7 @@ export default () => {
                             )
                         })
                     }
-                </Tabs.List>
+                </Tabs.List> */}
                 {
                     items.map(x => {
                         return (
