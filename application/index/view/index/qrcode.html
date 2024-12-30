@@ -88,10 +88,13 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            overflow: hidden;
         }
-        #qrcode img {
-            width: 280px !important;
-            height: 280px !important;
+        #qrcode img, #qrcode canvas {
+            max-width: 100%;
+            max-height: 100%;
+            width: auto !important;
+            height: auto !important;
         }
         @media (max-width: 768px) {
             .qr-settings, .qr-preview {
@@ -100,6 +103,19 @@
             }
             .qr-preview {
                 margin-top: 20px;
+            }
+            .qr-container {
+                padding: 0 15px;
+            }
+            #qrcode {
+                width: 100%;
+                height: 100%;
+                padding: 10px;
+                margin: 0 auto;
+            }
+            #qrcode img {
+                width: 100% !important;
+                height: auto !important;
             }
         }
     </style>
@@ -172,7 +188,7 @@
                                                             <input type="radio" name="size" value="custom"> 自定义尺寸
                                                             <input type="number" id="customSize" class="form-control custom-size-input" min="100" max="2000" disabled>
                                                         </label>
-                                                        <span class="help-block" style="margin: 0 0 0 25px;">自定义尺寸范围:100-2000像素</span>
+                                                        <span class="help-block" style="margin: 2px 0 0 0px;">范围:100-2000像素</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -229,11 +245,33 @@
         
         function initQRCode(size, level) {
             $("#qrcode").empty();
+            
+            const padding = 10;
+            const actualSize = size - (padding * 2);
+            
             qrcode = new QRCode("qrcode", {
-                width: size || 400,
-                height: size || 400,
-                correctLevel: QRCode.CorrectLevel[level || 'H']
+                width: size,
+                height: size,
+                correctLevel: QRCode.CorrectLevel[level || 'H'],
+                colorLight: "#FFFFFF",
+                colorDark: "#000000"
             });
+            
+            // var originalDrawing = qrcode._oDrawing;
+            // var originalDraw = originalDrawing.draw;
+            // originalDrawing.draw = function(oQRCode) {
+            //     originalDraw.call(this, oQRCode);
+                
+            //     if (this._oContext) {
+            //         var imageData = this._oContext.getImageData(0, 0, actualSize, actualSize);
+            //         this._oContext.clearRect(0, 0, size, size);
+            //         this._oContext.fillStyle = "#FFFFFF";
+            //         this._oContext.fillRect(0, 0, size, size);
+            //         this._oContext.putImageData(imageData, padding, padding);
+            //     }
+            // };
+            
+            return qrcode;
         }
 
         $(function() {
