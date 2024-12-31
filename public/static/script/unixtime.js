@@ -314,7 +314,7 @@ $(function() {
         
         // 获取当前时间
         const now = new Date();
-        // 填充Unix时间戳输入框（使用当前单位）
+        // 填充时间戳输入框（使用当前单位）
         $('.time1').val(Math.round(now.getTime() / (timestampUnit === 's' ? 1000 : 1)));
         // 填充日期时间输入框
         $('.time2-bj').val(formatDateTime(now, currentTimezone));

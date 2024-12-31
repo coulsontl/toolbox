@@ -6,13 +6,13 @@ return array (
   array (
     'title' => '在线工具箱-好用的在线工具都在这里！',
     'keywords' => '在线工具箱,在线工具',
-    'description' => '在线工具箱为您提供json格式化,json代码压缩,json校验解析,json数组解析,json转xml,xml转json,json解析,json在线解析,json在线解析及格式化,unix时间戳转换,CSS美化压缩,json美化,json格式化输出,json数组,json实体类,json视图等',
+    'description' => '在线工具箱为您提供json格式化,json代码压缩,json校验解析,json数组解析,json转xml,xml转json,json解析,json在线解析,json在线解析及格式化,时间戳转换,CSS美化压缩,json美化,json格式化输出,json数组,json实体类,json视图等',
   ),
   'json' => 
   array (
     'title' => 'json在线解析,json格式化,json代码压缩-在线工具箱',
     'keywords' => 'json格式化,json代码压缩,json校验解析,json数组',
-    'description' => '在线工具箱为您提供json格式化,json代码压缩,json校验解析,json数组解析,json转xml,xml转json,json解析,json在线解析,json在线解析及格式化,unix时间戳转换,CSS美化压缩,json美化,json格式化输出,json数组,json实体类,json视图等',
+    'description' => '在线工具箱为您提供json格式化,json代码压缩,json校验解析,json数组解析,json转xml,xml转json,json解析,json在线解析,json在线解析及格式化,时间戳转换,CSS美化压缩,json美化,json格式化输出,json数组,json实体类,json视图等',
   ),
   'jsonudview' => 
   array (
@@ -676,9 +676,9 @@ return array (
   ),
   'unixtime' => 
   array (
-    'title' => 'Unix时间戳,DateTime,在线时间戳,Timestamp时间戳转换工具-在线工具箱',
-    'keywords' => 'Unix时间戳,Unix timestamp转换工具,datetime日期转时间戳	',
-    'description' => 'Unix时间戳转换工具(Unix timestamp)，把Unix时间戳转成北京时间,datetime转换为时间戳,不同程序语言中实现Unix时间戳(Unix timestamp) → 转换成北京时间,Unix时间戳在线转换成现在时间，希望对大家有帮助	',
+    'title' => '时间戳,DateTime,在线时间戳,Timestamp时间戳转换工具-在线工具箱',
+    'keywords' => '时间戳,Unix timestamp转换工具,datetime日期转时间戳	',
+    'description' => '时间戳转换工具(Unix timestamp)，把时间戳转成北京时间,datetime转换为时间戳,不同程序语言中实现时间戳(Unix timestamp) → 转换成北京时间,时间戳在线转换成现在时间，希望对大家有帮助	',
   ),
   'excel2json' => 
   array (
@@ -966,7 +966,7 @@ return array (
   array (
     'title' => 'json在线解析及格式化-在线工具箱',
     'keywords' => 'json在线解析及格式化,json格式化,格式化美化压缩',
-    'description' => '在线工具箱为您提供json格式化,json代码压缩,json校验解析,json数组解析,json转xml,xml转json,json解析,json在线解析,json在线解析及格式化,unix时间戳转换,CSS美化压缩,json美化,json格式化输出,json数组,json实体类,json视图等',
+    'description' => '在线工具箱为您提供json格式化,json代码压缩,json校验解析,json数组解析,json转xml,xml转json,json解析,json在线解析,json在线解析及格式化,时间戳转换,CSS美化压缩,json美化,json格式化输出,json数组,json实体类,json视图等',
   ),
   'html2js' => 
   array (

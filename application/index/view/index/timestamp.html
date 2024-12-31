@@ -25,50 +25,62 @@
             background-color: #E3F2FD;
             border: 2px solid #90CAF9;
         }
+
         .time-unit-select {
             min-width: 120px;
         }
+
         .timezone-select {
             min-width: 160px;
         }
+
         .btn-group .btn {
             margin-right: 5px;
         }
+
         .current-timestamp,
         .current-datetime {
             font-size: 16px;
             line-height: 34px;
         }
+
         .current-timestamp .label,
         .current-datetime .label {
             color: #666;
             font-weight: normal;
             margin-right: 8px;
         }
+
         .current-timestamp .value,
         .current-datetime .value {
             color: #2196F3;
             font-weight: bold;
             margin-right: 8px;
         }
+
         .btn-group {
             margin-left: 8px;
         }
+
         .time2date,
         .date2time {
             margin: 0 8px;
             min-width: 80px;
         }
+
         .row {
             margin-bottom: 15px;
         }
+
         .form-group.input-group {
             margin: 0;
         }
+
         .col-lg-2 {
             padding: 0 5px !important;
             width: auto;
         }
+
         .btn.btn-outline.btn-success {
             padding: 6px 12px;
             margin: 0;
@@ -88,7 +100,7 @@
                             <li role="presentation"><a href="/enlower/">英文字母大小写转换</a></li>
                             <li role="presentation"><a href="/rmbdaxie/">人民币大写转换工具</a></li>
                             <li role="presentation"><a href="/random/">随机数生成器</a></li>
-                            <li role="presentation" class="active"><a href="/unixtime/"> Unix时间戳在线转换</a></li>
+                            <li role="presentation" class="active"><a href="/timestamp/"> 时间戳在线转换</a></li>
                             <li role="presentation"><a href="/hexconvert/">常用进制转换工具</a></li>
                         </ul>
                         <div class="row">
@@ -119,10 +131,11 @@
                         <div class="row">
                             <div class="col-lg-4">
                                 <div class="form-group input-group">
-                                    <span class="input-group-addon">Unix时间戳</span>
+                                    <span class="input-group-addon">时间戳</span>
                                     <input type="text" class="form-control time1" value="">
                                     <div class="input-group-btn">
-                                        <button type="button" class="btn btn-default dropdown-toggle time-unit-select" data-toggle="dropdown">
+                                        <button type="button" class="btn btn-default dropdown-toggle time-unit-select"
+                                            data-toggle="dropdown">
                                             秒(s) <span class="caret"></span>
                                         </button>
                                         <ul class="dropdown-menu dropdown-menu-right">
@@ -140,7 +153,8 @@
                                     <span class="input-group-addon">日期时间</span>
                                     <input type="text" class="form-control time1-bj" value="" placeholder="转换结果">
                                     <div class="input-group-btn">
-                                        <button type="button" class="btn btn-default dropdown-toggle timezone-select" data-toggle="dropdown">
+                                        <button type="button" class="btn btn-default dropdown-toggle timezone-select"
+                                            data-toggle="dropdown">
                                             <span class="timezone-text">Asia/Shanghai</span> <span class="caret"></span>
                                         </button>
                                         <ul class="dropdown-menu dropdown-menu-right timezone-list">
@@ -161,7 +175,8 @@
                                     <span class="input-group-addon">日期时间</span>
                                     <input type="text" class="form-control time2-bj" value="" placeholder="请输入日期时间">
                                     <div class="input-group-btn">
-                                        <button type="button" class="btn btn-default dropdown-toggle timezone-select" data-toggle="dropdown">
+                                        <button type="button" class="btn btn-default dropdown-toggle timezone-select"
+                                            data-toggle="dropdown">
                                             <span class="timezone-text">Asia/Shanghai</span> <span class="caret"></span>
                                         </button>
                                         <ul class="dropdown-menu dropdown-menu-right timezone-list">
@@ -178,7 +193,8 @@
                                     <span class="input-group-addon">时间戳</span>
                                     <input type="text" class="form-control time2" value="" placeholder="转换结果">
                                     <div class="input-group-btn">
-                                        <button type="button" class="btn btn-default dropdown-toggle time-unit-select" data-toggle="dropdown">
+                                        <button type="button" class="btn btn-default dropdown-toggle time-unit-select"
+                                            data-toggle="dropdown">
                                             秒(s) <span class="caret"></span>
                                         </button>
                                         <ul class="dropdown-menu dropdown-menu-right">
@@ -189,46 +205,15 @@
                                 </div>
                             </div>
                         </div>
-                        <div style="margin-top: 30px;">
-                            <div class="alert alert alert-success alert-dismissible">
-                                <h4>Unix时间戳转换工具介绍</h4>
-                                <p>Unix时间戳转换工具，可以将Unix时间戳转换成标准格式的北京时间，也可以将标准格式的北京时间转换为 UNIX 时间戳；</p>
-                                <p>什么是Unix时间戳(Unix timestamp)：时间戳是指格林威治时间1970年01月01日00时00分00秒(北京时间1970年01月01日08时00分00秒)起至现在的总秒数。
-                                </p>
-                                <p><strong>PHP示例Unixtime的用法</strong>：</p>
-                                <p>获取当前时间戳：<em class='code_label'>$time = time();</em> 转换为北京时间：<em class='code_label'>$datetime
-                                        = date('Y-m-d H:i:s',$time);</em> 转换为时间戳：<em class='code_label'>$unixtime =
-                                        strtotime($datetime);</em>（www.<font>pcjson</font>.com）</p>
-                            </div>
-                        </div>
-                        <div class="panel panel-default">
-                            <h4>1、不同程序语言或数据库中，获取现在的Unix时间戳(Unix timestamp)的方法：</h4>
-                            <table class="table table-hover table-bordered table-striped">
-                                <tbody>
-                                    <tr>
-                                        <td>PHP</td>
-                                        <td>time()</td>
-                                    </tr>
-                                    <tr>
-                                        <td width="200">Java</td>
-                                        <td>time</td>
-                                    </tr>
-                                    <tr>
-                                        <td>JavaScript</td>
-                                        <td>Math.round(new Date().getTime()/1000)<br>getTime()返回数值的单位是毫秒</td>
                     </div>
                     <div class="alert alert alert-success alert-dismissible">
-                        <h4>Unix时间戳转换工具介绍</h4>
-                        <p>Unix时间戳转换工具，可以将Unix时间戳转换成标准格式的北京时间，也可以将标准格式的北京时间转换为 UNIX 时间戳；</p>
-                        <p>什么是Unix时间戳(Unix timestamp)：时间戳是指格林威治时间1970年01月01日00时00分00秒(北京时间1970年01月01日08时00分00秒)起至现在的总秒数。
+                        <h4>时间戳转换工具介绍</h4>
+                        <p>时间戳转换工具，可以将时间戳转换成标准格式的日期时间，也可以将标准格式的日期时间转换为 UNIX 时间戳；</p>
+                        <p>什么是时间戳(Unix timestamp)：时间戳是指格林威治时间1970年01月01日00时00分00秒(北京时间1970年01月01日08时00分00秒)起至现在的总秒数。
                         </p>
-                        <p><strong>PHP示例Unixtime的用法</strong>：</p>
-                        <p>获取当前时间戳：<em class='code_label'>$time = time();</em> 转换为北京时间：<em class='code_label'>$datetime
-                                = date('Y-m-d H:i:s',$time);</em> 转换为时间戳：<em class='code_label'>$unixtime =
-                                strtotime($datetime);</em>（www.<font>pcjson</font>.com）</p>
                     </div>
                     <div class="panel panel-default">
-                        <h4>1、不同程序语言或数据库中，获取现在的Unix时间戳(Unix timestamp)的方法：</h4>
+                        <h4>1、不同程序语言或数据库中，获取现在的时间戳(Unix timestamp)的方法：</h4>
                         <table class="table table-hover table-bordered table-striped">
                             <tbody>
                                 <tr>
@@ -266,7 +251,7 @@
                                 </tr>
                                 <tr>
                                     <td>Ruby</td>
-                                    <td>获取Unix时间戳：Time.now 或 Time.new<br>显示Unix时间戳：Time.now.to_i</td>
+                                    <td>获取时间戳：Time.now 或 Time.new<br>显示时间戳：Time.now.to_i</td>
                                 </tr>
                                 <tr>
                                     <td>SQL Server</td>
@@ -284,7 +269,7 @@
                         </table>
                     </div>
                     <div class="panel panel-default">
-                        <h4>2、不同程序语言或数据库中，实现普通时间 → Unix时间戳(Unix timestamp)：</h4>
+                        <h4>2、不同程序语言或数据库中，实现普通时间 → 时间戳(Unix timestamp)：</h4>
                         <table class="table table-hover table-bordered table-striped">
                             <tbody>
                                 <tr>
@@ -340,7 +325,7 @@
                         </table>
                     </div>
                     <div class="panel panel-default">
-                        <h4>3、不同程序语言或数据库中，Unix时间戳(Unix timestamp) 转为 普通时间（年-月-日 时:分:秒）：</h4>
+                        <h4>3、不同程序语言或数据库中，时间戳(Unix timestamp) 转为 普通时间（年-月-日 时:分:秒）：</h4>
                         <table class="table table-hover table-bordered table-striped">
                             <tbody>
                                 <tr>
