@@ -8,7 +8,11 @@ import JSONSuperTools from './JSONSuperTools'
 import './index-global.css'
 import { Toaster } from 'sonner'
 
-function mount(el: HTMLElement) {
+interface MountOptions {
+  heightOffset?: number;
+}
+
+function mount(el: HTMLElement, options: MountOptions = {}) {
   const root = createRoot(el)
   root.render(
     <React.StrictMode>
@@ -16,7 +20,7 @@ function mount(el: HTMLElement) {
         <BrowserRouter>
           <MantineProvider>
             <Toaster position="top-center" richColors />
-            <JSONSuperTools />
+            <JSONSuperTools heightOffset={options.heightOffset ?? 0} />
           </MantineProvider>
         </BrowserRouter>
       </Provider>

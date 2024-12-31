@@ -22,7 +22,7 @@ root.render(
             <BrowserRouter>
                 <MantineProvider>
                     <Toaster position="top-center" richColors />
-                    <JSONSuperTools />
+                    <JSONSuperTools heightOffset={0} />
                 </MantineProvider>
             </BrowserRouter>
         </Provider>

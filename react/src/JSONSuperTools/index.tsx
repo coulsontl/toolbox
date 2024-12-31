@@ -12,9 +12,12 @@ export type JSONTypeItem = {
     icon: any,
     loadFN: any
 }
-export default () => {
-    const hist = useHistory()
-    const iconStyle = { width: rem(12), height: rem(12) };
+
+interface JSONSuperToolsProps {
+    heightOffset?: number;
+}
+
+export default ({ heightOffset = 0 }: JSONSuperToolsProps) => {
     const items: JSONTypeItem[] = [
         {
             name: 'JSON格式转换',
@@ -22,49 +25,15 @@ export default () => {
             icon: IconTransformFilled,
             loadFN: () => Promise.resolve({ default: JSONConversion })
         },
-        // {
-        //     name: 'JSON格式提取',
-        //     id: 'export',
-        //     icon: IconOutlet,
-        //     loadFN: () => import('./JSONExport.tsx')
-        // },
-        // {
-        //     name: 'JSON差异对比',
-        //     id: 'diff',
-        //     icon: IconFileInfinity,
-        //     loadFN: () => import('./JSONDiff.tsx')
-        // },
     ]
     const activeId = items[0].id
-    const hVal = 'calc(100vh - 110px)'
+    const hVal = `calc(100vh - ${heightOffset}px)`
     return (
         <Card p={0} withBorder style={{
             minHeight: hVal,
             height: hVal
         }}>
             <Tabs defaultValue={activeId} className="h-full flex flex-col">
-                {/* <Tabs.List>
-                    <Tabs.Tab
-                        className="h-[35px]"
-                        value={'home'}
-                        leftSection={<IconHome style={iconStyle} />}
-                        onClick={() => {
-                            hist.push('/')
-                            window.location.reload()
-                        }}
-                    >
-                        回到首页
-                    </Tabs.Tab>
-                    {
-                        items.map(x => {
-                            return (
-                                <Tabs.Tab className="h-[35px]" value={x.id} leftSection={<x.icon style={iconStyle} />}>
-                                    {x.name}
-                                </Tabs.Tab>
-                            )
-                        })
-                    }
-                </Tabs.List> */}
                 {
                     items.map(x => {
                         return (

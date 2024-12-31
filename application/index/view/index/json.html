@@ -36,14 +36,18 @@
     // 等待文档和脚本完全加载
     window.addEventListener('load', function () {
       try {
-        console.log('Window JSONTools:', window.JSONTools); // 调试用
+        // console.log('Window JSONTools:', window.JSONTools); // 调试用
         if (typeof window.JSONTools === 'undefined') {
           throw new Error('JSONTools 未正确加载');
         }
         if (typeof window.JSONTools.mount !== 'function') {
           throw new Error('JSONTools.mount 不是一个函数');
         }
-        window.JSONTools.mount(document.getElementById('json-tools-root'));
+        // 传入高度偏移值
+        window.JSONTools.mount(
+          document.getElementById('json-tools-root'), 
+          { heightOffset: 160 }
+        );
       } catch (error) {
         console.error('挂载 JSONTools 时发生错误:', error);
       }
@@ -53,6 +57,7 @@
     type="text/javascript">var bs = [1, 24, 0.1428571, 1440.0000288, 86400, 86400000, 0.0027397]; var num = 0; $(".BtnHS").on("click", function () { num = $(this).prev().val(); if (num != "" && !isNaN(num)) { var tag = num / bs[$(".TimeCountCent li").index($(this).parent())]; $(".TimeCountCent li").each(function (ind) { $(this).find(".TimeTxt").val(bs[ind] * tag) }) } }); $("#reset").on("click", function () { $("input[type='text']").val("") });;</script>
   {include file="nav" /}
   {include file="link" /}
+  {include file="footer" /}
 </body>
 
 </html>

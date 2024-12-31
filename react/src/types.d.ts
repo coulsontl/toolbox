@@ -1,6 +1,6 @@
 declare global {
   interface Window {
-    mountJSONTools: (el: HTMLElement) => void;
+    JSONTools: { mount: (el: HTMLElement) => void; }
   }
 }
 
