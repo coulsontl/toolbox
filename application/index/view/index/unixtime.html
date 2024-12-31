@@ -17,6 +17,64 @@
     <link href="/static/style/bootstrap.min.css" rel="stylesheet" type="text/css" />
     <link href="/static/style/tool.css" rel="stylesheet" type="text/css" />
     <!--[if lt IE 9]><script src="//apps.bdimg.com/libs/html5shiv/3.7/html5shiv.min.js"></script><script src="//apps.bdimg.com/libs/respond.js/1.4.2/respond.min.js"></script><![endif]-->{:$Think.config.web.header}
+    <style>
+        .now-time {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2196F3;
+            background-color: #E3F2FD;
+            border: 2px solid #90CAF9;
+        }
+        .time-unit-select {
+            min-width: 120px;
+        }
+        .timezone-select {
+            min-width: 160px;
+        }
+        .btn-group .btn {
+            margin-right: 5px;
+        }
+        .current-timestamp,
+        .current-datetime {
+            font-size: 16px;
+            line-height: 34px;
+        }
+        .current-timestamp .label,
+        .current-datetime .label {
+            color: #666;
+            font-weight: normal;
+            margin-right: 8px;
+        }
+        .current-timestamp .value,
+        .current-datetime .value {
+            color: #2196F3;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+        .btn-group {
+            margin-left: 8px;
+        }
+        .time2date,
+        .date2time {
+            margin: 0 8px;
+            min-width: 80px;
+        }
+        .row {
+            margin-bottom: 15px;
+        }
+        .form-group.input-group {
+            margin: 0;
+        }
+        .col-lg-2 {
+            padding: 0 5px !important;
+            width: auto;
+        }
+        .btn.btn-outline.btn-success {
+            padding: 6px 12px;
+            margin: 0;
+            width: 60px;
+        }
+    </style>
 </head>
 
 <body>{include file="header" /}
@@ -34,74 +92,130 @@
                             <li role="presentation"><a href="/hexconvert/">常用进制转换工具</a></li>
                         </ul>
                         <div class="row">
+                            <div class="col-lg-4">
+                                <div class="current-timestamp">
+                                    <span class="label">当前时间戳:</span>
+                                    <span class="value timestamp"></span>
+                                </div>
+                            </div>
+                            <div class="col-lg-5">
+                                <div class="current-datetime">
+                                    <span class="label">当前日期时间:</span>
+                                    <span class="value datetime"></span>
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="btn-group">
+                                    <button class="btn btn-danger toggle-timer">停止</button>
+                                    <button class="btn btn-success" onclick="currentTime();return false;">刷新</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" style="margin-bottom: 5px;">
                             <div class="col-lg-12">
-                                <div class="panel panel-default">
-                                    <div class="panel-heading">Unix时间戳, Unix时间戳转换工具</div>
-                                    <div class="panel-body">
-                                        <div class="row">
-                                            <div class="col-lg-3">
-                                                <div class="form-group input-group"><span
-                                                        class="input-group-addon">当前时间戳</span><input type="text"
-                                                        class="form-control now-time" value=""></div>
-                                            </div>
-                                            <div class="col-lg-4">
-                                                <div class="form-group input-group"><span
-                                                        class="input-group-addon">　北京时间</span><input type="text"
-                                                        class="form-control bj-now-time" id="time1-bj" value=""></div>
-                                            </div>
-                                            <div class="col-lg-3">
-                                                <div class="form-group input-group"><button class="btn btn-default"
-                                                        onclick="startTimer();return false;">开始</button><button
-                                                        class="btn btn-default"
-                                                        onclick="stopTimer();return false;">停止</button><button
-                                                        class="btn btn-default"
-                                                        onclick="currentTime();return false;">刷新</button> </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-lg-12">
-                                                <p>Unix时间戳(Unix timestamp) → 北京时间</p>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-lg-3">
-                                                <div class="form-group input-group"><span
-                                                        class="input-group-addon">Unix时间戳</span><input type="text"
-                                                        class="form-control time1" value=""></div>
-                                            </div>
-                                            <div class="col-lg-2"><button type="button"
-                                                    class="btn btn-outline btn-success time2date">转换 → 　日期</button>
-                                            </div>
-                                            <div class="col-lg-3">
-                                                <div class="form-group input-group"><span
-                                                        class="input-group-addon">北京时间</span><input type="text"
-                                                        class="form-control time1-bj" value=""></div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-lg-12">
-                                                <p>北京时间 → Unix时间戳(Unix timestamp)</p>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-lg-3">
-                                                <div class="form-group input-group"><span
-                                                        class="input-group-addon">北京时间</span><input type="text"
-                                                        class="form-control time2-bj" value=""></div>
-                                            </div>
-                                            <div class="col-lg-2"><button type="button"
-                                                    class="btn btn-outline btn-success date2time">转换 → 时间戳</button>
-                                            </div>
-                                            <div class="col-lg-3">
-                                                <div class="form-group input-group"><span
-                                                        class="input-group-addon">Unix时间戳</span><input type="text"
-                                                        class="form-control time2" value=""></div>
-                                            </div>
-                                        </div>
+                                <p style="margin-bottom: 5px;"><strong>时间戳 → 日期时间</strong></p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <div class="form-group input-group">
+                                    <span class="input-group-addon">Unix时间戳</span>
+                                    <input type="text" class="form-control time1" value="">
+                                    <div class="input-group-btn">
+                                        <button type="button" class="btn btn-default dropdown-toggle time-unit-select" data-toggle="dropdown">
+                                            秒(s) <span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-right">
+                                            <li><a href="#" data-unit="s">秒(s)</a></li>
+                                            <li><a href="#" data-unit="ms">毫秒(ms)</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2">
+                                <button type="button" class="btn btn-outline btn-success time2date">转换</button>
+                            </div>
+                            <div class="col-lg-5">
+                                <div class="form-group input-group">
+                                    <span class="input-group-addon">日期时间</span>
+                                    <input type="text" class="form-control time1-bj" value="" placeholder="转换结果">
+                                    <div class="input-group-btn">
+                                        <button type="button" class="btn btn-default dropdown-toggle timezone-select" data-toggle="dropdown">
+                                            <span class="timezone-text">Asia/Shanghai</span> <span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-right timezone-list">
+                                            <!-- 时区列表将通过JavaScript动态填充 -->
+                                        </ul>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        <div class="row" style="margin-bottom: 5px;">
+                            <div class="col-lg-12">
+                                <p style="margin-bottom: 5px;"><strong>日期时间 → 时间戳</strong></p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-5">
+                                <div class="form-group input-group">
+                                    <span class="input-group-addon">日期时间</span>
+                                    <input type="text" class="form-control time2-bj" value="" placeholder="请输入日期时间">
+                                    <div class="input-group-btn">
+                                        <button type="button" class="btn btn-default dropdown-toggle timezone-select" data-toggle="dropdown">
+                                            <span class="timezone-text">Asia/Shanghai</span> <span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-right timezone-list">
+                                            <!-- 时区列表将通过JavaScript动态填充 -->
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2">
+                                <button type="button" class="btn btn-outline btn-success date2time">转换</button>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="form-group input-group">
+                                    <span class="input-group-addon">时间戳</span>
+                                    <input type="text" class="form-control time2" value="" placeholder="转换结果">
+                                    <div class="input-group-btn">
+                                        <button type="button" class="btn btn-default dropdown-toggle time-unit-select" data-toggle="dropdown">
+                                            秒(s) <span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-right">
+                                            <li><a href="#" data-unit="s">秒(s)</a></li>
+                                            <li><a href="#" data-unit="ms">毫秒(ms)</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="margin-top: 30px;">
+                            <div class="alert alert alert-success alert-dismissible">
+                                <h4>Unix时间戳转换工具介绍</h4>
+                                <p>Unix时间戳转换工具，可以将Unix时间戳转换成标准格式的北京时间，也可以将标准格式的北京时间转换为 UNIX 时间戳；</p>
+                                <p>什么是Unix时间戳(Unix timestamp)：时间戳是指格林威治时间1970年01月01日00时00分00秒(北京时间1970年01月01日08时00分00秒)起至现在的总秒数。
+                                </p>
+                                <p><strong>PHP示例Unixtime的用法</strong>：</p>
+                                <p>获取当前时间戳：<em class='code_label'>$time = time();</em> 转换为北京时间：<em class='code_label'>$datetime
+                                        = date('Y-m-d H:i:s',$time);</em> 转换为时间戳：<em class='code_label'>$unixtime =
+                                        strtotime($datetime);</em>（www.<font>pcjson</font>.com）</p>
+                            </div>
+                        </div>
+                        <div class="panel panel-default">
+                            <h4>1、不同程序语言或数据库中，获取现在的Unix时间戳(Unix timestamp)的方法：</h4>
+                            <table class="table table-hover table-bordered table-striped">
+                                <tbody>
+                                    <tr>
+                                        <td>PHP</td>
+                                        <td>time()</td>
+                                    </tr>
+                                    <tr>
+                                        <td width="200">Java</td>
+                                        <td>time</td>
+                                    </tr>
+                                    <tr>
+                                        <td>JavaScript</td>
+                                        <td>Math.round(new Date().getTime()/1000)<br>getTime()返回数值的单位是毫秒</td>
                     </div>
                     <div class="alert alert alert-success alert-dismissible">
                         <h4>Unix时间戳转换工具介绍</h4>
@@ -288,9 +402,13 @@
     <script src="/static/script/jquery-1.11.3.min.js" type="text/javascript"></script>
     <script src="/static/script/bootstrap.min.js" type="text/javascript"></script>
     <script src="/static/script/tool.js" type="text/javascript"></script>
-    <script src="/static/script/unixtime.js" type="text/javascript"></script>{include file="nav" /}
+    <script src="/static/script/unixtime.js" type="text/javascript"></script>
+    {include file="nav" /}
     {include file="link" /}
     {include file="footer" /}
+</body>
+
+</html>
 </body>
 
 </html>
