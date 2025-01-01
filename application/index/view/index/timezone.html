@@ -28,6 +28,15 @@
         .timezone-select {
             margin-bottom: 20px;
         }
+        .timezone-select select {
+            width: auto;
+            display: inline-block;
+        }
+        .timezone-select input {
+            width: 200px;
+            display: inline-block;
+            margin-left: 10px;
+        }
         .time-table {
             width: 100%;
             margin-top: 20px;
@@ -63,6 +72,14 @@
         .tab-buttons button.current.active {
             background: #e0e0e0;
         }
+        .measure-text {
+            visibility: hidden;
+            position: absolute;
+            white-space: nowrap;
+            font-family: inherit;
+            font-size: inherit;
+            font-weight: inherit;
+        }
     </style>
 </head>
 
@@ -94,9 +111,9 @@
                         <div class="panel">
                             <div class="worldtime-container">
                                 <div class="timezone-select">
-                                    <select id="timezone-select" class="form-control" style="width: 300px; display: inline-block;">
+                                    <select id="timezone-select" class="form-control">
                                     </select>
-                                    <input type="text" id="current-time" class="form-control" style="width: 200px; display: inline-block; margin-left: 10px;" placeholder="2024-12-31 22:38:35">
+                                    <input type="text" id="current-time" class="form-control" placeholder="2024-12-31 22:38:35">
                                 </div>
 
                                 <div class="tab-buttons">
@@ -476,11 +493,28 @@
                 }
             });
 
+            // 添加用于测量文本宽度的span
+            $('body').append('<span class="measure-text"></span>');
+            
+            // 调整选择框宽度的函数
+            function adjustSelectWidth() {
+                const selectedText = $('#timezone-select option:selected').text();
+                $('.measure-text').text(selectedText);
+                const textWidth = $('.measure-text').width();
+                $('#timezone-select').width(textWidth + 30); // 30px for padding and arrow
+            }
+            
+            // 在选择改变时调整宽度
+            $('#timezone-select').on('change', adjustSelectWidth);
+            
             // 初始化时设置为当前时区时间
             const now = new Date();
             $('#timezone-select').val(systemZoneInfo.timezone);
             $('#current-time').val(formatDateTime(now));
             updateTimeTable(now.getTime());
+            
+            // 初始化时调整宽度
+            adjustSelectWidth();
             
             $('.tab-buttons button').click(function() {
                 $(this).addClass('active');
