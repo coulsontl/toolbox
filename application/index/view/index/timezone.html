@@ -94,7 +94,7 @@
                         <div class="panel">
                             <div class="worldtime-container">
                                 <div class="timezone-select">
-                                    <select id="timezone-select" class="form-control" style="width: 200px; display: inline-block;">
+                                    <select id="timezone-select" class="form-control" style="width: 260px; display: inline-block;">
                                         <option value="Asia/Shanghai">中国/上海 - Asia/Shanghai</option>
                                     </select>
                                     <input type="text" id="current-time" class="form-control" style="width: 200px; display: inline-block; margin-left: 10px;" placeholder="2024-12-31 22:38:35">
@@ -102,8 +102,6 @@
 
                                 <div class="tab-buttons">
                                     <button class="btn btn-success" onclick="convertTime()">转换其他时区时间</button>
-                                    <button class="btn current" onclick="setCurrentTime()">当前时区时间</button>
-                                    <button class="btn current" onclick="setUTCTime()">当前UTC时间</button>
                                 </div>
 
                                 <table class="time-table table table-bordered">
@@ -155,174 +153,136 @@
     <script src="/static/script/tool.js" type="text/javascript"></script>
     <script>
         const timeZones = [
-            { continent: '世界标准时间', city: 'UTC', offset: '+00:00', timezone: 'UTC', dst: false },
-            { continent: '亚洲', city: '中国/上海 Asia/Shanghai', offset: '+08:00', timezone: 'CST', dst: false },
-            { continent: '亚洲', city: '日本/东京 Asia/Tokyo', offset: '+09:00', timezone: 'JST', dst: false },
-            { continent: '亚洲', city: '韩国/首尔 Asia/Seoul', offset: '+09:00', timezone: 'KST', dst: false },
-            { continent: '亚洲', city: '新加坡/新加坡 Asia/Singapore', offset: '+08:00', timezone: '+08', dst: false },
-            { continent: '亚洲', city: '泰国/曼谷 Asia/Bangkok', offset: '+07:00', timezone: '+07', dst: false },
-            { continent: '亚洲', city: '尼泊尔/加德满都 Asia/Kathmandu', offset: '+05:45', timezone: '+0545', dst: false },
-            { continent: '亚洲', city: '孟加拉/达卡 Asia/Dhaka', offset: '+06:00', timezone: '+06', dst: false },
-            { continent: '亚洲', city: '印度/加尔各答 Asia/Kolkata', offset: '+05:30', timezone: 'IST', dst: false },
-            { continent: '亚洲', city: '斯里兰卡/科伦坡 Asia/Colombo', offset: '+05:30', timezone: '+0530', dst: false },
-            { continent: '亚洲', city: '巴基斯坦/卡拉奇 Asia/Karachi', offset: '+05:00', timezone: 'PKT', dst: false },
-            { continent: '亚洲', city: '阿富汗/喀布尔 Asia/Kabul', offset: '+04:30', timezone: '+0430', dst: false },
-            { continent: '亚洲', city: '阿联酋/迪拜 Asia/Dubai', offset: '+04:00', timezone: '+04', dst: false },
-            { continent: '亚洲', city: '伊拉克/巴格达 Asia/Baghdad', offset: '+03:00', timezone: '+03', dst: false },
-            { continent: '非洲', city: '肯尼亚/内罗毕 Africa/Nairobi', offset: '+03:00', timezone: 'EAT', dst: false },
-            { continent: '非洲', city: '埃及/开罗 Africa/Cairo', offset: '+02:00', timezone: 'EET', dst: true, dstOffset: '+03:00' },
-            { continent: '非洲', city: '尼日利亚/拉各斯 Africa/Lagos', offset: '+01:00', timezone: 'WAT', dst: false },
-            { continent: '欧洲', city: '俄罗斯/莫斯科 Europe/Moscow', offset: '+03:00', timezone: 'MSK', dst: false },
-            { continent: '欧洲', city: '土耳其/伊斯坦布尔 Europe/Istanbul', offset: '+03:00', timezone: '+03', dst: false },
-            { continent: '欧洲', city: '罗马尼亚/布加勒斯特 Europe/Bucharest', offset: '+02:00', timezone: 'EET', dst: true, dstOffset: '+03:00' },
-            { continent: '欧洲', city: '法国/巴黎 Europe/Paris', offset: '+01:00', timezone: 'CET', dst: true, dstOffset: '+02:00' },
-            { continent: '欧洲', city: '德国/柏林 Europe/Berlin', offset: '+01:00', timezone: 'CET', dst: true, dstOffset: '+02:00' },
-            { continent: '欧洲', city: '英国/伦敦 Europe/London', offset: '+00:00', timezone: 'GMT', dst: true, dstOffset: '+01:00' },
-            { continent: '欧洲', city: '爱尔兰/都柏林 Europe/Dublin', offset: '+00:00', timezone: 'GMT', dst: true, dstOffset: '+01:00' },
-            { continent: '美洲', city: '美国/纽约 America/New_York', offset: '-05:00', timezone: 'EST', dst: true, dstOffset: '-04:00' },
-            { continent: '美洲', city: '美国/芝加哥 America/Chicago', offset: '-06:00', timezone: 'CST', dst: true, dstOffset: '-05:00' },
-            { continent: '美洲', city: '美国/博伊西 America/Boise', offset: '-07:00', timezone: 'MST', dst: true, dstOffset: '-06:00' },
-            { continent: '美洲', city: '美国/洛杉矶 America/Los_Angeles', offset: '-08:00', timezone: 'PST', dst: true, dstOffset: '-07:00' },
-            { continent: '美洲', city: '加拿大/温哥华 America/Vancouver', offset: '-08:00', timezone: 'PST', dst: true, dstOffset: '-07:00' },
-            { continent: '美洲', city: '加拿大/温尼伯 America/Winnipeg', offset: '-06:00', timezone: 'CST', dst: true, dstOffset: '-05:00' },
-            { continent: '美洲', city: '加拿大/多伦多 America/Toronto', offset: '-05:00', timezone: 'EST', dst: true, dstOffset: '-04:00' },
-            { continent: '美洲', city: '巴西/圣保罗 America/Sao_Paulo', offset: '-03:00', timezone: '-03', dst: false },
-            { continent: '美洲', city: '秘鲁/利马 America/Lima', offset: '-05:00', timezone: '-05', dst: false },
-            { continent: '美洲', city: '墨西哥/墨西哥城 America/Mexico_City', offset: '-06:00', timezone: 'CST', dst: true, dstOffset: '-05:00' },
-            { continent: '大洋洲', city: '新西兰/奥克兰 Pacific/Auckland', offset: '+12:00', timezone: 'NZST', dst: true, dstOffset: '+13:00' },
-            { continent: '大洋洲', city: '澳大利亚/悉尼 Australia/Sydney', offset: '+10:00', timezone: 'AEST', dst: true, dstOffset: '+11:00' }
+            { continent: '世界标准时间', city: 'UTC', timezone: 'UTC' },
+            { continent: '亚洲', city: '中国/上海 Asia/Shanghai', timezone: 'Asia/Shanghai' },
+            { continent: '亚洲', city: '日本/东京 Asia/Tokyo', timezone: 'Asia/Tokyo' },
+            { continent: '亚洲', city: '韩国/首尔 Asia/Seoul', timezone: 'Asia/Seoul' },
+            { continent: '亚洲', city: '新加坡/新加坡 Asia/Singapore', timezone: 'Asia/Singapore' },
+            { continent: '亚洲', city: '泰国/曼谷 Asia/Bangkok', timezone: 'Asia/Bangkok' },
+            { continent: '亚洲', city: '尼泊尔/加德满都 Asia/Kathmandu', timezone: 'Asia/Kathmandu' },
+            { continent: '亚洲', city: '孟加拉/达卡 Asia/Dhaka', timezone: 'Asia/Dhaka' },
+            { continent: '亚洲', city: '印度/加尔各答 Asia/Kolkata', timezone: 'Asia/Kolkata' },
+            { continent: '亚洲', city: '斯里兰卡/科伦坡 Asia/Colombo', timezone: 'Asia/Colombo' },
+            { continent: '亚洲', city: '巴基斯坦/卡拉奇 Asia/Karachi', timezone: 'Asia/Karachi' },
+            { continent: '亚洲', city: '阿富汗/喀布尔 Asia/Kabul', timezone: 'Asia/Kabul' },
+            { continent: '亚洲', city: '阿联酋/迪拜 Asia/Dubai', timezone: 'Asia/Dubai' },
+            { continent: '亚洲', city: '伊拉克/巴格达 Asia/Baghdad', timezone: 'Asia/Baghdad' },
+            { continent: '非洲', city: '肯尼亚/内罗毕 Africa/Nairobi', timezone: 'Africa/Nairobi' },
+            { continent: '非洲', city: '埃及/开罗 Africa/Cairo', timezone: 'Africa/Cairo' },
+            { continent: '非洲', city: '尼日利亚/拉各斯 Africa/Lagos', timezone: 'Africa/Lagos' },
+            { continent: '欧洲', city: '俄罗斯/莫斯科 Europe/Moscow', timezone: 'Europe/Moscow' },
+            { continent: '欧洲', city: '土耳其/伊斯坦布尔 Europe/Istanbul', timezone: 'Europe/Istanbul' },
+            { continent: '欧洲', city: '罗马尼亚/布加勒斯特 Europe/Bucharest', timezone: 'Europe/Bucharest' },
+            { continent: '欧洲', city: '法国/巴黎 Europe/Paris', timezone: 'Europe/Paris' },
+            { continent: '欧洲', city: '德国/柏林 Europe/Berlin', timezone: 'Europe/Berlin' },
+            { continent: '欧洲', city: '英国/伦敦 Europe/London', timezone: 'Europe/London' },
+            { continent: '欧洲', city: '爱尔兰/都柏林 Europe/Dublin', timezone: 'Europe/Dublin' },
+            { continent: '美洲', city: '美国/纽约 America/New_York', timezone: 'America/New_York' },
+            { continent: '美洲', city: '美国/芝加哥 America/Chicago', timezone: 'America/Chicago' },
+            { continent: '美洲', city: '美国/博伊西 America/Boise', timezone: 'America/Boise' },
+            { continent: '美洲', city: '美国/洛杉矶 America/Los_Angeles', timezone: 'America/Los_Angeles' },
+            { continent: '美洲', city: '加拿大/温哥华 America/Vancouver', timezone: 'America/Vancouver' },
+            { continent: '美洲', city: '加拿大/温尼伯 America/Winnipeg', timezone: 'America/Winnipeg' },
+            { continent: '美洲', city: '加拿大/多伦多 America/Toronto', timezone: 'America/Toronto' },
+            { continent: '美洲', city: '巴西/圣保罗 America/Sao_Paulo', timezone: 'America/Sao_Paulo' },
+            { continent: '美洲', city: '秘鲁/利马 America/Lima', timezone: 'America/Lima' },
+            { continent: '美洲', city: '墨西哥/墨西哥城 America/Mexico_City', timezone: 'America/Mexico_City' },
+            { continent: '大洋洲', city: '新西兰/奥克兰 Pacific/Auckland', timezone: 'Pacific/Auckland' },
+            { continent: '大洋洲', city: '澳大利亚/悉尼 Australia/Sydney', timezone: 'Australia/Sydney' }
         ];
 
-        // 判断是否处于夏令时
-        function isDST(date, zone) {
-            if (!zone.dst) return false;
-            
-            const year = date.getUTCFullYear();
-            const month = date.getUTCMonth() + 1;
-            const day = date.getUTCDate();
-            const hour = date.getUTCHours();
-            
-            let isDST = false;
-            
-            // 获取实际的时区ID
-            const zoneId = zone.city.split(' ').pop();
-            
-            // 埃及特殊处理
-            if (zoneId === 'Africa/Cairo') {
-                if (month > 4 && month < 10) {
-                    isDST = true;
-                } else if (month === 4) {
-                    // 获取4月的最后一个周五
-                    const lastDay = new Date(Date.UTC(year, 4, 0)).getUTCDate(); // 4月的最后一天
-                    let lastFriday = lastDay;
-                    const lastDayOfWeek = new Date(Date.UTC(year, 3, lastDay)).getUTCDay();
-                    if (lastDayOfWeek !== 5) { // 5 是周五
-                        lastFriday = lastDay - ((lastDayOfWeek + 2) % 7);
-                    }
-                    isDST = day > lastFriday || (day === lastFriday && hour >= 0);
-                } else if (month === 10) {
-                    // 获取10月的最后一个周四
-                    const lastDay = new Date(Date.UTC(year, 10, 0)).getUTCDate(); // 10月的最后一天
-                    let lastThursday = lastDay;
-                    const lastDayOfWeek = new Date(Date.UTC(year, 9, lastDay)).getUTCDay();
-                    if (lastDayOfWeek !== 4) { // 4 是周四
-                        lastThursday = lastDay - ((lastDayOfWeek + 3) % 7);
-                    }
-                    isDST = day < lastThursday || (day === lastThursday && hour < 24);
-                }
-                return isDST;
+        // 获取时区偏移量和夏令时信息
+        function getTimezoneInfo(date, timezone) {
+            if (timezone === 'UTC') {
+                return {
+                    offset: '+00:00',
+                    isDST: false,
+                    timeSystem: '',
+                    tzAbbr: 'UTC'
+                };
             }
-            
-            // 精确匹配时区
-            if (isEUCountry(zoneId)) {
-                // 欧盟夏令时：3月最后一个周日 1AM UTC 至 10月最后一个周日 1AM UTC
-                if (month > 3 && month < 10) {
-                    isDST = true;
-                } else if (month === 3) {
-                    const lastSunday = getLastSunday(year, 2); // 2 表示三月
-                    isDST = day > lastSunday || (day === lastSunday && hour >= 1);
-                } else if (month === 10) {
-                    const lastSunday = getLastSunday(year, 9); // 9 表示十月
-                    isDST = day < lastSunday || (day === lastSunday && hour < 1);
+
+            try {
+                // 获取时区偏移量
+                const dtf = new Intl.DateTimeFormat('en-GB', {
+                    timeZone: timezone,
+                    timeZoneName: 'shortOffset',
+                    hour12: false
+                });
+                const formatted = dtf.format(date);
+                const match = formatted.match(/GMT([+-]\d{1,2}(?::\d{2})?)/);
+                let offset = match ? match[1] : '+00:00';
+
+                // 确保偏移量格式为 +HH:MM 或 -HH:MM
+                if (!offset.includes(':')) {
+                    offset = offset + ':00';
                 }
-            }
-            // 北美处理
-            else if (isNorthAmerica(zoneId)) {
-                // 北美夏令时：3月第二个周日 2AM 至 11月第一个周日 2AM
-                if (month > 3 && month < 11) {
-                    isDST = true;
-                } else if (month === 3) {
-                    const secondSunday = getNthSunday(year, 2, 2); // 第二个周日
-                    isDST = day > secondSunday || (day === secondSunday && hour >= 2);
-                } else if (month === 11) {
-                    const firstSunday = getNthSunday(year, 10, 1); // 第一个周日
-                    isDST = day < firstSunday || (day === firstSunday && hour < 2);
+                if (offset.length === 5) {  // 处理 +H:MM 的情况
+                    offset = offset[0] + '0' + offset.slice(1);
                 }
+
+                // 检查是否为夏令时
+                const longFormatter = new Intl.DateTimeFormat('en-US', {
+                    timeZone: timezone,
+                    timeZoneName: 'long'
+                });
+                const longFormatted = longFormatter.format(date);
+
+                // 检查当前时间是否为夏令时
+                const isDST = longFormatted.includes('Daylight');
+
+                // 获取时区缩写
+                const shortFormatter = new Intl.DateTimeFormat('en-US', {
+                    timeZone: timezone,
+                    timeZoneName: 'short'
+                });
+                const shortFormatted = shortFormatter.format(date);
+                const tzAbbr = shortFormatted.split(' ').pop();
+
+                // 检查是否使用夏令时制度
+                // 检查夏季和冬季的时区名称是否不同
+                const summerDate = new Date(date.getFullYear(), 6, 1); // 7月1日
+                const winterDate = new Date(date.getFullYear(), 0, 1); // 1月1日
+                
+                const summerFormatter = new Intl.DateTimeFormat('en-US', {
+                    timeZone: timezone,
+                    timeZoneName: 'long'
+                });
+                const winterFormatter = new Intl.DateTimeFormat('en-US', {
+                    timeZone: timezone,
+                    timeZoneName: 'long'
+                });
+                
+                const summerName = summerFormatter.format(summerDate);
+                const winterName = winterFormatter.format(winterDate);
+                
+                // 提取时区名称部分
+                const getSummerTimezoneName = summerName.split(',')[1].trim();
+                const getWinterTimezoneName = winterName.split(',')[1].trim();
+                
+                const usesDST = getSummerTimezoneName !== getWinterTimezoneName;
+
+                return {
+                    offset,
+                    isDST,
+                    timeSystem: usesDST ? (isDST ? '夏令时' : '冬令时') : '',
+                    tzAbbr
+                };
+            } catch (error) {
+                console.error(`Error processing timezone ${timezone}:`, error);
+                return {
+                    offset: '+00:00',
+                    isDST: false,
+                    timeSystem: '',
+                    tzAbbr: ''
+                };
             }
-            // 澳大利亚和新西兰处理（南半球）
-            else if (zoneId.startsWith('Australia/') || zoneId === 'Pacific/Auckland') {
-                // 处理跨年的情况
-                if (month === 12 || month === 1 || month === 2 || month === 3) {
-                    isDST = true;
-                } else if (month === 4) {
-                    const firstSunday = getNthSunday(year, 3, 1);
-                    isDST = day < firstSunday || (day === firstSunday && hour < 3);
-                } else if (month === 10) {
-                    const firstSunday = getNthSunday(year, 9, 1);
-                    isDST = day > firstSunday || (day === firstSunday && hour >= 2);
-                }
-            }
-            
-            return isDST;
         }
 
-        // 辅助函数：获取指定月份的最后一个周日
-        function getLastSunday(year, month) {
-            const date = new Date(Date.UTC(year, month + 1, 0)); // 月份的最后一天
-            const lastDay = date.getUTCDate();
-            const lastDayOfWeek = date.getUTCDay();
-            return lastDay - lastDayOfWeek;
-        }
-
-        // 辅助函数：获取指定月份的第N个周日
-        function getNthSunday(year, month, n) {
-            let date = new Date(Date.UTC(year, month, 1));
-            let firstDay = date.getUTCDay();
-            let firstSunday = 1 + (7 - firstDay) % 7;
-            return firstSunday + (n - 1) * 7;
-        }
-
-        // 辅助函数：判断是否为欧盟国家
-        function isEUCountry(zoneId) {
-            const euZones = [
-                'Europe/Paris',
-                'Europe/Berlin',
-                'Europe/Rome',
-                'Europe/Madrid',
-                'Europe/Dublin',
-                'Europe/London', // 虽然英国已脱欧，但仍遵循相同的夏令时规则
-                'Europe/Bucharest'
-                // 可以根据需要添加更多欧盟国家
-            ];
-            return euZones.includes(zoneId);
-        }
-
-        // 辅助函数：判断是否为北美地区
-        function isNorthAmerica(zoneId) {
-            return zoneId.startsWith('America/') && 
-                   (zoneId.includes('New_York') || 
-                    zoneId.includes('Chicago') || 
-                    zoneId.includes('Denver') || 
-                    zoneId.includes('Los_Angeles') ||
-                    zoneId.includes('Toronto') ||
-                    zoneId.includes('Vancouver') ||
-                    zoneId.includes('Winnipeg'));
-        }
-
-        function getEffectiveOffset(date, zone) {
-            if (!zone.dst) return zone.offset;
-            
-            return isDST(date, zone) ? zone.dstOffset : zone.offset;
+        // 格式化日期时间
+        function formatDateTime(date) {
+            const pad = (num) => String(num).padStart(2, '0');
+            return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
         }
 
         // 解析时间字符串为Date对象
@@ -363,49 +323,7 @@
             return null;
         }
 
-        function formatDateTime(date) {
-            const pad = (num) => String(num).padStart(2, '0');
-            return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
-        }
-
-        function updateTimes() {
-            let inputTime = $('#current-time').val();
-            const selectedZone = $('#timezone-select').val();
-            const selectedZoneInfo = timeZones.find(zone => zone.city.split(' ')[1] === selectedZone || zone.city === selectedZone);
-            
-            if (inputTime) {
-                // 尝试解析输入的时间字符串
-                const inputDate = parseTimeString(inputTime);
-                if (!inputDate) {
-                    alert('请输入正确的时间格式，如：2024-12-31 22:38:35');
-                    return;
-                }
-                
-                // 将输入时间转换为UTC时间，需要考虑夏令时
-                const effectiveOffset = getEffectiveOffset(inputDate, selectedZoneInfo);
-                const selectedOffsetHours = parseInt(effectiveOffset.split(':')[0]);
-                const selectedOffsetMinutes = parseInt(effectiveOffset.split(':')[1] || '00');
-                const totalOffsetMinutes = selectedOffsetHours * 60 + Math.sign(selectedOffsetHours) * selectedOffsetMinutes;
-                
-                // 计算UTC时间（从选定时区时间减去偏移量得到UTC时间）
-                const utcTime = new Date(inputDate.getTime() - totalOffsetMinutes * 60000);
-                updateTimeTable(utcTime);
-            } else {
-                // 如果没有输入时间，使用当前时间
-                const now = new Date();
-                $('#current-time').val(formatDateTime(now));
-                // 当前本地时间转换为UTC时间，需要考虑夏令时
-                const localZoneInfo = timeZones.find(zone => zone.city.includes('Shanghai'));
-                const effectiveOffset = getEffectiveOffset(now, localZoneInfo);
-                const offsetHours = parseInt(effectiveOffset.split(':')[0]);
-                const offsetMinutes = parseInt(effectiveOffset.split(':')[1] || '00');
-                const totalOffsetMinutes = offsetHours * 60 + Math.sign(offsetHours) * offsetMinutes;
-                const utcTime = new Date(now.getTime() - totalOffsetMinutes * 60000);
-                updateTimeTable(utcTime);
-            }
-        }
-
-        function updateTimeTable(utcTime) {
+        function updateTimeTable(timestamp) {
             let html = '';
             let currentContinent = '';
             
@@ -417,43 +335,69 @@
             
             // 第二次遍历：生成HTML
             timeZones.forEach(zone => {
-                // 获取考虑夏令时后的实际偏移量
-                const effectiveOffset = getEffectiveOffset(utcTime, zone);
-                
-                // 解析时区偏移量
-                const offsetParts = effectiveOffset.split(':');
-                const offsetHours = parseInt(offsetParts[0]);
-                const offsetMinutes = parseInt(offsetParts[1] || '00');
-                const totalOffsetMinutes = offsetHours * 60 + Math.sign(offsetHours) * offsetMinutes;
-                
-                // 从UTC时间计算目标时区时间
-                const targetTime = new Date(utcTime.getTime() + totalOffsetMinutes * 60000);
-                
-                let row = '<tr>';
-                
-                // 如果是新的洲，添加带有rowspan的单元格
-                if (zone.continent !== currentContinent) {
-                    row += `<td rowspan="${continentCounts[zone.continent]}">${zone.continent}</td>`;
-                    currentContinent = zone.continent;
+                try {
+                    // 获取时区信息
+                    const date = new Date(timestamp);
+                    const { offset, timeSystem, tzAbbr } = getTimezoneInfo(date, zone.timezone);
+                    
+                    // 使用浏览器的API转换时间
+                    const options = {
+                        timeZone: zone.timezone,
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit',
+                        hour12: false
+                    };
+                    
+                    const localTimeStr = new Intl.DateTimeFormat('en-US', options).format(date);
+                    const [datePart, timePart] = localTimeStr.split(', ');
+                    const [month, day, year] = datePart.split('/');
+                    const [hours, minutes, seconds] = timePart.split(':');
+                    
+                    const localDate = new Date(
+                        parseInt(year),
+                        parseInt(month) - 1,
+                        parseInt(day),
+                        parseInt(hours),
+                        parseInt(minutes),
+                        parseInt(seconds)
+                    );
+                    
+                    let row = '<tr>';
+                    
+                    // 如果是新的洲，添加带有rowspan的单元格
+                    if (zone.continent !== currentContinent) {
+                        row += `<td rowspan="${continentCounts[zone.continent]}">${zone.continent}</td>`;
+                        currentContinent = zone.continent;
+                    }
+                    
+                    row += `
+                        <td>${zone.city}</td>
+                        <td>${formatDateTime(localDate)}</td>
+                        <td>${offset}${timeSystem ? ' (' + timeSystem + ')' : ''}</td>
+                        <td>${tzAbbr}</td>
+                    </tr>`;
+                    
+                    html += row;
+                } catch (error) {
+                    console.error(`Error processing timezone ${zone.timezone}:`, error);
+                    // 发生错误时显示一个占位行
+                    let row = '<tr>';
+                    if (zone.continent !== currentContinent) {
+                        row += `<td rowspan="${continentCounts[zone.continent]}">${zone.continent}</td>`;
+                        currentContinent = zone.continent;
+                    }
+                    row += `
+                        <td>${zone.city}</td>
+                        <td>--</td>
+                        <td>--</td>
+                        <td>--</td>
+                    </tr>`;
+                    html += row;
                 }
-                
-                // 获取当前时令状态
-                let timeSystem = '';
-                if (zone.dst) {
-                    timeSystem = isDST(utcTime, zone) ? '夏令时' : '冬令时';
-                }
-                
-                // 组合UTC偏移量和时令信息
-                const offsetDisplay = timeSystem ? `${effectiveOffset} (${timeSystem})` : effectiveOffset;
-                
-                row += `
-                    <td>${zone.city}</td>
-                    <td>${formatDateTime(targetTime)}</td>
-                    <td>${offsetDisplay}</td>
-                    <td>${zone.timezone}</td>
-                </tr>`;
-                
-                html += row;
             });
             
             $('#time-zones').empty().append(html);
@@ -463,34 +407,50 @@
             updateTimes();
         }
 
-        function setCurrentTime() {
-            // 设置为当前时区
-            $('#timezone-select').val('Asia/Shanghai');
-            const now = new Date();
-            $('#current-time').val(formatDateTime(now));
-            // 转换为UTC时间，需要考虑夏令时
-            const localZoneInfo = timeZones.find(zone => zone.city.includes('Shanghai'));
-            const effectiveOffset = getEffectiveOffset(now, localZoneInfo);
-            const offsetHours = parseInt(effectiveOffset.split(':')[0]);
-            const offsetMinutes = parseInt(effectiveOffset.split(':')[1] || '00');
-            const totalOffsetMinutes = offsetHours * 60 + Math.sign(offsetHours) * offsetMinutes;
-            const utcTime = new Date(now.getTime() - totalOffsetMinutes * 60000);
-            updateTimeTable(utcTime);
-        }
+        function updateTimes() {
+            let inputTime = $('#current-time').val();
+            const selectedZone = $('#timezone-select').val();
+            
+            if (inputTime) {
+                // 尝试解析输入的时间字符串
+                const inputDate = parseTimeString(inputTime);
+                if (!inputDate) {
+                    alert('请输入正确的时间格式，如：2024-12-31 22:38:35');
+                    return;
+                }
 
-        function setUTCTime() {
-            // 设置为UTC时区
-            $('#timezone-select').val('UTC');
-            const now = new Date();
-            // 获取UTC时间，需要考虑夏令时
-            const localZoneInfo = timeZones.find(zone => zone.city.includes('Shanghai'));
-            const effectiveOffset = getEffectiveOffset(now, localZoneInfo);
-            const offsetHours = parseInt(effectiveOffset.split(':')[0]);
-            const offsetMinutes = parseInt(effectiveOffset.split(':')[1] || '00');
-            const totalOffsetMinutes = offsetHours * 60 + Math.sign(offsetHours) * offsetMinutes;
-            const utcTime = new Date(now.getTime() - totalOffsetMinutes * 60000);
-            $('#current-time').val(formatDateTime(utcTime));
-            updateTimeTable(utcTime);
+                // 将用户输入的时间转换为时间戳
+                const timestamp = Date.UTC(
+                    inputDate.getFullYear(),
+                    inputDate.getMonth(),
+                    inputDate.getDate(),
+                    inputDate.getHours(),
+                    inputDate.getMinutes(),
+                    inputDate.getSeconds()
+                );
+
+                // 获取用户选择时区当前的偏移量（分钟）
+                const formatter = new Intl.DateTimeFormat('en-US', {
+                    timeZone: selectedZone,
+                    timeZoneName: 'longOffset',
+                    year: 'numeric'
+                });
+                const parts = formatter.formatToParts(inputDate);
+                const offsetPart = parts.find(part => part.type === 'timeZoneName');
+                const offset = offsetPart ? offsetPart.value.replace('GMT', '') : '+00:00';
+                const [offsetHours, offsetMinutes = '00'] = offset.split(':');
+                const totalOffsetMinutes = parseInt(offsetHours) * 60 + Math.sign(parseInt(offsetHours)) * parseInt(offsetMinutes);
+
+                // 调整时间戳以考虑时区偏移
+                const adjustedTimestamp = timestamp - totalOffsetMinutes * 60000;
+                
+                updateTimeTable(adjustedTimestamp);
+            } else {
+                // 如果没有输入时间，使用当前时间
+                const now = new Date();
+                $('#current-time').val(formatDateTime(now));
+                updateTimeTable(now.getTime());
+            }
         }
 
         $(document).ready(function() {
@@ -506,10 +466,12 @@
             });
 
             // 初始化时设置为当前时区时间
-            setCurrentTime();
+            const now = new Date();
+            $('#timezone-select').val('Asia/Shanghai');
+            $('#current-time').val(formatDateTime(now));
+            updateTimeTable(now.getTime());
             
             $('.tab-buttons button').click(function() {
-                $('.tab-buttons button').removeClass('active');
                 $(this).addClass('active');
             });
         });
