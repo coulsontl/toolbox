@@ -32,7 +32,7 @@ function populateTimezoneList() {
 }
 
 // 格式化日期时间
-function formatDateTime(date, timezone = currentTimezone) {
+function formatDateTime(date, timezone = currentTimezone, showMilliseconds = false) {
     const options = {
         year: 'numeric',
         month: '2-digit',
@@ -52,7 +52,13 @@ function formatDateTime(date, timezone = currentTimezone) {
         values[part.type] = part.value;
     });
     
-    return `${values.year}-${values.month}-${values.day} ${values.hour}:${values.minute}:${values.second}`;
+    if (showMilliseconds) {
+        // 添加毫秒
+        const milliseconds = date.getMilliseconds().toString().padStart(3, '0');
+        return `${values.year}-${values.month}-${values.day} ${values.hour}:${values.minute}:${values.second}.${milliseconds}`;
+    } else {
+        return `${values.year}-${values.month}-${values.day} ${values.hour}:${values.minute}:${values.second}`;
+    }
 }
 
 // 更新当前时间显示
@@ -110,7 +116,8 @@ function initEventListeners() {
             const timestamp = $('.time1').val();
             if(timestamp) {
                 const date = new Date(parseInt(timestamp) * (timestampUnit === 's' ? 1000 : 1));
-                $dateInput.val(formatDateTime(date, newTimezone));
+                // 根据时间戳单位决定是否显示毫秒
+                $dateInput.val(formatDateTime(date, newTimezone, timestampUnit === 'ms'));
             }
         }
     });
@@ -136,14 +143,20 @@ function initEventListeners() {
             let newValue;
             if(newUnit === 'ms' && timestampUnit === 's') {
                 // 从秒转换为毫秒
-                newValue = (parseFloat(currentValue) * 1000).toString();
+                newValue = (parseInt(currentValue) * 1000).toString();
             } else if(newUnit === 's' && timestampUnit === 'ms') {
-                // 从毫秒转换为秒
-                newValue = (parseFloat(currentValue) / 1000).toString();
+                // 从毫秒转换为秒，取整
+                newValue = Math.floor(parseInt(currentValue) / 1000).toString();
             }
             
             if(newValue) {
                 $input.val(newValue);
+                
+                // 如果已经有转换结果，也需要更新日期时间显示
+                if($('.time1-bj').val()) {
+                    const date = new Date(parseInt(newValue) * (newUnit === 's' ? 1000 : 1));
+                    $('.time1-bj').val(formatDateTime(date, currentTimezone, newUnit === 'ms'));
+                }
             }
         }
         
@@ -159,6 +172,7 @@ function initEventListeners() {
         const $button = $dropdown.find('button');
         const $input = $('.time2');
         const currentValue = $input.val();
+        const dateTimeStr = $('.time2-bj').val();
 
         // 更新按钮文本
         if(newUnit === 'ms') {
@@ -172,10 +186,19 @@ function initEventListeners() {
             let newValue;
             if(newUnit === 'ms' && dateUnit === 's') {
                 // 从秒转换为毫秒
-                newValue = (parseFloat(currentValue) * 1000).toString();
+                // 检查日期时间输入是否包含毫秒
+                const timeComponents = dateTimeStr.split('.');
+                if (timeComponents.length > 1) {
+                    // 如果包含毫秒，使用原始的毫秒值
+                    const milliseconds = parseInt(timeComponents[1]);
+                    newValue = (parseInt(currentValue) * 1000 + milliseconds).toString();
+                } else {
+                    // 如果不包含毫秒，补充000
+                    newValue = (parseInt(currentValue) * 1000).toString();
+                }
             } else if(newUnit === 's' && dateUnit === 'ms') {
-                // 从毫秒转换为秒
-                newValue = (parseFloat(currentValue) / 1000).toString();
+                // 从毫秒转换为秒，取整
+                newValue = Math.floor(parseInt(currentValue) / 1000).toString();
             }
             
             if(newValue) {
@@ -219,10 +242,12 @@ function initEventListeners() {
         if(timestampUnit === 'ms') {
             date = new Date(parseInt(correctedTimestamp));
         } else {
+            // 如果是秒，不需要处理毫秒
             date = new Date(parseInt(correctedTimestamp) * 1000);
         }
         
-        $('.time1-bj').val(formatDateTime(date, currentTimezone));
+        // 只在毫秒单位时显示毫秒
+        $('.time1-bj').val(formatDateTime(date, currentTimezone, timestampUnit === 'ms'));
     });
 
     $('.date2time').on('click', function() {
@@ -233,7 +258,9 @@ function initEventListeners() {
             // 创建一个特定时区的日期对象
             const [datePart, timePart] = dateStr.split(' ');
             const [year, month, day] = datePart.split('-');
-            const [hour, minute, second] = timePart.split(':');
+            const timeComponents = timePart.split('.');
+            const [hour, minute, second] = timeComponents[0].split(':');
+            const milliseconds = timeComponents[1] ? parseInt(timeComponents[1]) : 0;
             
             // 获取用户选择的时区
             const timezone = $(this).closest('.row').find('.timezone-select .timezone-text').text();
@@ -245,7 +272,8 @@ function initEventListeners() {
                 parseInt(day),
                 parseInt(hour),
                 parseInt(minute),
-                parseInt(second)
+                parseInt(second),
+                milliseconds
             ));
             
             // 获取时区偏移量（小时）
@@ -282,6 +310,7 @@ function initEventListeners() {
             if(dateUnit === 'ms') {
                 $('.time2').val(timestamp);
             } else {
+                // 如果是秒，取整以去除小数点
                 $('.time2').val(Math.floor(timestamp / 1000));
             }
         } catch(error) {
@@ -316,7 +345,7 @@ $(function() {
         const now = new Date();
         // 填充时间戳输入框（使用当前单位）
         $('.time1').val(Math.round(now.getTime() / (timestampUnit === 's' ? 1000 : 1)));
-        // 填充日期时间输入框
+        // 填充日期时间输入框（不显示毫秒）
         $('.time2-bj').val(formatDateTime(now, currentTimezone));
     } catch (error) {
         console.error('初始化错误:', error);
