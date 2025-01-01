@@ -3,7 +3,7 @@ let isRunning = true;
 let timer = 0;
 let timestampUnit = 's'; // 时间戳输入框的单位
 let dateUnit = 's';      // 日期时间输入框的单位
-let currentTimezone = 'Asia/Shanghai'; // 默认时区
+let currentTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone; // 获取浏览器默认时区
 
 // 常用时区列表
 const commonTimezones = [
@@ -17,18 +17,31 @@ const commonTimezones = [
     { id: 'UTC', name: '协调世界时 (UTC)' }
 ];
 
+// 获取时区显示名称
+function getTimezoneName(timezoneId) {
+    const timezone = commonTimezones.find(tz => tz.id === timezoneId);
+    return timezone ? timezone.name : timezoneId;
+}
+
 // 填充时区下拉列表
 function populateTimezoneList() {
     const $lists = $('.timezone-list');
     $lists.each(function() {
         const $list = $(this);
+        // 添加当前时区（如果不在常用时区列表中）
+        if (!commonTimezones.some(tz => tz.id === currentTimezone)) {
+            $list.append(`<li><a href="#" data-timezone="${currentTimezone}">${currentTimezone}</a></li>`);
+        }
+        // 添加常用时区
         commonTimezones.forEach(tz => {
             $list.append(`<li><a href="#" data-timezone="${tz.id}">${tz.name}</a></li>`);
         });
     });
     
-    // 设置初始时区显示
-    $('.timezone-select .timezone-text').text('Asia/Shanghai');
+    // 设置初始时区显示和数据
+    const timezoneName = getTimezoneName(currentTimezone);
+    $('.timezone-select .timezone-text').text(timezoneName || currentTimezone)
+                                      .data('timezone-id', currentTimezone);
 }
 
 // 格式化日期时间
@@ -104,19 +117,19 @@ function initEventListeners() {
         const $button = $(this).closest('.input-group-btn').find('.timezone-select');
         const timezoneName = $(this).text();
         
-        // 更新按钮文本
-        $button.find('.timezone-text').text(newTimezone);
+        // 更新按钮文本和时区ID
+        $button.find('.timezone-text').text(timezoneName)
+                                 .data('timezone-id', newTimezone);
         
         // 更新当前时区
         currentTimezone = newTimezone;
         
-        // 只在时间戳→日期时间转换中更新显示
+        // 只更新时间戳→日期时间的显示
         const $dateInput = $(this).closest('.input-group').find('input');
         if($dateInput.hasClass('time1-bj') && $('.time1').val()) {
             const timestamp = $('.time1').val();
             if(timestamp) {
                 const date = new Date(parseInt(timestamp) * (timestampUnit === 's' ? 1000 : 1));
-                // 根据时间戳单位决定是否显示毫秒
                 $dateInput.val(formatDateTime(date, newTimezone, timestampUnit === 'ms'));
             }
         }
@@ -215,39 +228,72 @@ function initEventListeners() {
         const timestamp = $('.time1').val();
         if(!timestamp) return;
 
-        // 检查并修正时间戳格式
-        let correctedTimestamp = timestamp;
-        if(timestampUnit === 'ms') {
-            // 如果是毫秒，应该是13位
-            if(timestamp.length < 13) {
-                correctedTimestamp = timestamp + '0'.repeat(13 - timestamp.length);
-            } else if(timestamp.length > 13) {
-                correctedTimestamp = timestamp.substring(0, 13);
+        try {
+            // 检查时间戳是否为有效数字
+            if(isNaN(timestamp)) {
+                throw new Error('无效的时间戳');
             }
-        } else {
-            // 如果是秒，应该是10位
-            if(timestamp.length < 10) {
-                correctedTimestamp = timestamp + '0'.repeat(10 - timestamp.length);
-            } else if(timestamp.length > 10) {
-                correctedTimestamp = timestamp.substring(0, 10);
+
+            // 检查并修正时间戳格式
+            let correctedTimestamp = timestamp;
+            if(timestampUnit === 'ms') {
+                // 如果是毫秒，应该是13位
+                if(timestamp.length < 13) {
+                    correctedTimestamp = timestamp + '0'.repeat(13 - timestamp.length);
+                } else if(timestamp.length > 13) {
+                    correctedTimestamp = timestamp.substring(0, 13);
+                }
+            } else {
+                // 如果是秒，应该是10位
+                if(timestamp.length < 10) {
+                    correctedTimestamp = timestamp + '0'.repeat(10 - timestamp.length);
+                } else if(timestamp.length > 10) {
+                    correctedTimestamp = timestamp.substring(0, 10);
+                }
             }
-        }
 
-        // 如果时间戳被修正，更新输入框
-        if(correctedTimestamp !== timestamp) {
-            $('.time1').val(correctedTimestamp);
-        }
+            // 如果时间戳被修正，更新输入框
+            if(correctedTimestamp !== timestamp) {
+                $('.time1').val(correctedTimestamp);
+            }
 
-        let date = new Date();
-        if(timestampUnit === 'ms') {
-            date = new Date(parseInt(correctedTimestamp));
-        } else {
-            // 如果是秒，不需要处理毫秒
-            date = new Date(parseInt(correctedTimestamp) * 1000);
+            // 创建 UTC 时间对象
+            const timestampNum = parseInt(correctedTimestamp);
+            const date = new Date(timestampUnit === 'ms' ? timestampNum : timestampNum * 1000);
+
+            // 检查日期是否有效
+            if(isNaN(date.getTime())) {
+                throw new Error('无效的日期');
+            }
+
+            // 检查是否是夏令时切换的无效时间
+            const formatter = new Intl.DateTimeFormat('en-US', {
+                timeZone: currentTimezone,
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false
+            });
+
+            const parts = formatter.formatToParts(date);
+            const formattedHour = parts.find(p => p.type === 'hour')?.value;
+            
+            // 如果格式化后的小时数与原始时间相差超过1小时，说明可能是在夏令时切换期间
+            const originalHour = date.getHours();
+            const hourDiff = Math.abs(parseInt(formattedHour) - originalHour);
+            if (hourDiff > 1) {
+                console.warn('注意：此时间处于夏令时切换期间');
+            }
+
+            // 使用 formatDateTime 转换为目标时区的时间，并根据单位决定是否显示毫秒
+            $('.time1-bj').val(formatDateTime(date, currentTimezone, timestampUnit === 'ms'));
+        } catch(error) {
+            console.error('时间戳转换错误:', error);
+            alert(error.message || '时间戳格式不正确或转换出错');
         }
-        
-        // 只在毫秒单位时显示毫秒
-        $('.time1-bj').val(formatDateTime(date, currentTimezone, timestampUnit === 'ms'));
     });
 
     $('.date2time').on('click', function() {
@@ -255,66 +301,94 @@ function initEventListeners() {
         if(!dateStr) return;
         
         try {
-            // 创建一个特定时区的日期对象
+            // 解析日期时间字符串
             const [datePart, timePart] = dateStr.split(' ');
-            const [year, month, day] = datePart.split('-');
+            if(!datePart || !timePart) {
+                throw new Error('日期时间格式不正确');
+            }
+
+            const [year, month, day] = datePart.split('-').map(Number);
             const timeComponents = timePart.split('.');
-            const [hour, minute, second] = timeComponents[0].split(':');
+            const [hour, minute, second] = timeComponents[0].split(':').map(Number);
             const milliseconds = timeComponents[1] ? parseInt(timeComponents[1]) : 0;
-            
-            // 获取用户选择的时区
-            const timezone = $(this).closest('.row').find('.timezone-select .timezone-text').text();
-            
-            // 创建一个UTC的日期对象
-            const date = new Date(Date.UTC(
-                parseInt(year),
-                parseInt(month) - 1,
-                parseInt(day),
-                parseInt(hour),
-                parseInt(minute),
-                parseInt(second),
-                milliseconds
-            ));
-            
-            // 获取时区偏移量（小时）
-            let offset = 0;
-            switch(timezone) {
-                case 'Asia/Shanghai':
-                case 'Asia/Singapore':
-                    offset = -8; // UTC+8
-                    break;
-                case 'Asia/Tokyo':
-                    offset = -9; // UTC+9
-                    break;
-                case 'Europe/London':
-                    offset = 0; // UTC+0
-                    break;
-                case 'Europe/Paris':
-                    offset = -1; // UTC+1
-                    break;
-                case 'America/New_York':
-                    offset = 5; // UTC-5
-                    break;
-                case 'America/Los_Angeles':
-                    offset = 8; // UTC-8
-                    break;
-                case 'UTC':
-                    offset = 0;
-                    break;
+
+            // 验证日期时间各个部分
+            if([year, month, day, hour, minute, second].some(isNaN)) {
+                throw new Error('日期时间包含无效数值');
             }
             
-            // 应用时区偏移
-            const timestamp = date.getTime() + (offset * 3600 * 1000);
+            // 获取用户选择的时区ID（不是显示文本）
+            const $timezoneSelect = $(this).closest('.row').find('.timezone-select');
+            const timezone = $timezoneSelect.find('.timezone-text').data('timezone-id') || currentTimezone;
+            
+            // 检查是否是夏令时切换的特殊时间
+            const testDate = new Date(year, month - 1, day, hour, minute, second);
+            const prevHour = new Date(testDate.getTime() - 3600000); // 前一个小时
+            const nextHour = new Date(testDate.getTime() + 3600000); // 后一个小时
+            
+            const formatter = new Intl.DateTimeFormat('en-US', {
+                timeZone: timezone,
+                hour: '2-digit',
+                hour12: false
+            });
+            
+            const currentHour = parseInt(formatter.format(testDate));
+            const prevFormattedHour = parseInt(formatter.format(prevHour));
+            const nextFormattedHour = parseInt(formatter.format(nextHour));
+            
+            // 检查是否在夏令时切换期间（跳过或重复的小时）
+            if (Math.abs(nextFormattedHour - prevFormattedHour) !== 2) {
+                console.warn('注意：此时间可能处于夏令时切换期间');
+            }
+            
+            // 使用 Intl.DateTimeFormat 来处理时区转换（包括夏令时）
+            const utcDate = new Date(Date.UTC(year, month - 1, day, hour, minute, second, milliseconds));
+            const fullFormatter = new Intl.DateTimeFormat('en-US', {
+                timeZone: timezone,
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false,
+                fractionalSecondDigits: 3
+            });
+
+            // 使用 formatToParts 来获取转换后的时间部分
+            const parts = fullFormatter.formatToParts(utcDate);
+            const values = {};
+            parts.forEach(part => {
+                values[part.type] = parseInt(part.value);
+            });
+
+            // 构建本地时间
+            const localDate = new Date(
+                values.year,
+                values.month - 1,
+                values.day,
+                values.hour || 0,
+                values.minute || 0,
+                values.second || 0,
+                milliseconds
+            );
+            
+            const timestamp = localDate.getTime();
+            
+            // 检查转换结果是否有效
+            if(isNaN(timestamp)) {
+                throw new Error('时间转换结果无效');
+            }
             
             // 根据选择的单位显示结果
             if(dateUnit === 'ms') {
                 $('.time2').val(timestamp);
             } else {
-                // 如果是秒，取整以去除小数点
                 $('.time2').val(Math.floor(timestamp / 1000));
             }
         } catch(error) {
             console.error('时间转换错误:', error);
+            alert(error.message || '时间格式不正确或转换出错');
         }
     });
 }
