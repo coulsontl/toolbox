@@ -94,8 +94,7 @@
                         <div class="panel">
                             <div class="worldtime-container">
                                 <div class="timezone-select">
-                                    <select id="timezone-select" class="form-control" style="width: 260px; display: inline-block;">
-                                        <option value="Asia/Shanghai">中国/上海 - Asia/Shanghai</option>
+                                    <select id="timezone-select" class="form-control" style="width: 300px; display: inline-block;">
                                     </select>
                                     <input type="text" id="current-time" class="form-control" style="width: 200px; display: inline-block; margin-left: 10px;" placeholder="2024-12-31 22:38:35">
                                 </div>
@@ -454,20 +453,32 @@
         }
 
         $(document).ready(function() {
-            // 初始化时区选择器
-            const existingOptions = new Set(Array.from($('#timezone-select option')).map(opt => opt.value));
+            // 获取当前系统时区
+            const systemTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
             
+            // 初始化时区选择器
+            const existingOptions = new Set();
+            
+            // 找到当前系统时区对应的完整信息
+            const systemZoneInfo = timeZones.find(zone => zone.timezone === systemTimeZone) || timeZones.find(zone => zone.timezone === 'Asia/Shanghai');
+            
+            // 添加当前系统时区作为第一个选项
+            $('#timezone-select').append(`<option value="${systemZoneInfo.timezone}">${systemZoneInfo.city}</option>`);
+            existingOptions.add(systemZoneInfo.timezone);
+            
+            // 添加其他时区
             timeZones.forEach(zone => {
-                const value = zone.city.split(' ')[1] || zone.city; // 处理UTC特殊情况
+                const value = zone.timezone;
                 // 只有当选项不存在时才添加
                 if (!existingOptions.has(value)) {
                     $('#timezone-select').append(`<option value="${value}">${zone.city}</option>`);
+                    existingOptions.add(value);
                 }
             });
 
             // 初始化时设置为当前时区时间
             const now = new Date();
-            $('#timezone-select').val('Asia/Shanghai');
+            $('#timezone-select').val(systemZoneInfo.timezone);
             $('#current-time').val(formatDateTime(now));
             updateTimeTable(now.getTime());
             
