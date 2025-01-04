@@ -12,6 +12,7 @@ cache/
 .github/
 .gitignore
 # 忽略 Docker 相关文件
+Dockerfile
 .dockerignore
 # 忽略测试文件
 tests/
