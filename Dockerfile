@@ -1,40 +1,28 @@
-# 使用官方 PHP 8.1 镜像作为基础镜像
-FROM php:8.1-cli
+FROM php:8.1-fpm-alpine
+
+# 安装 nginx
+RUN apk add --no-cache nginx
 
 # 设置工作目录
-WORKDIR /app
-
-# 安装系统依赖和 PHP 扩展
-RUN apt-get update && apt-get install -y \
-    git \
-    unzip \
-    libzip-dev \
-    libpng-dev \
-    libjpeg-dev \
-    libfreetype6-dev \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install -j$(nproc) \
-        zip \
-        pdo \
-        pdo_mysql \
-        gd \
-    && rm -rf /var/lib/apt/lists/*
-
-# 安装 Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-
-# 允许 Composer 以超级用户身份运行
-ENV COMPOSER_ALLOW_SUPERUSER=1
+WORKDIR /www/toolbox
 
 # 复制项目文件到容器中
 COPY . .
 
-# 设置目录权限
-RUN chmod -R 755 . \
-    && chmod -R 777 public
+# 设置目录权限并清理不必要的文件
+RUN chown -R www-data:www-data . \
+    && chmod -R 755 . \
+    && chmod -R 775 runtime public
 
-# 暴露端口（使用 8080）
-EXPOSE 8080
+# 配置 nginx
+COPY scripts/nginx.conf /etc/nginx/http.d/default.conf
 
-# 使用 PHP 内置服务器启动项目
-CMD ["php", "-S", "0.0.0.0:8080", "-t", "public"]
+# 复制并设置启动脚本
+COPY scripts/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+# 暴露 Web 端口
+EXPOSE 80
+
+# 设置启动脚本
+ENTRYPOINT ["/entrypoint.sh"]

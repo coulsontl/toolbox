@@ -1,7 +1,5 @@
 # 忽略 node_modules 目录
 node_modules/
-# 忽略 vendor 目录（Composer 依赖目录）
-vendor/
 # 忽略日志文件
 *.log
 # 忽略缓存文件
@@ -11,14 +9,13 @@ cache/
 .vscode/
 # 忽略 Git 相关文件
 .git/
+.github/
 .gitignore
-# 忽略 Docker 相关文件（如果需要）
-Dockerfile
+# 忽略 Docker 相关文件
 .dockerignore
 # 忽略测试文件
 tests/
 # 忽略临时文件
 tmp/
-# 忽略运行时文件
-runtime/
+# 忽略前端文件
 react/
