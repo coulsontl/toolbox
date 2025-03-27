@@ -74,6 +74,61 @@ function formatDateTime(date, timezone = currentTimezone, showMilliseconds = fal
     }
 }
 
+// 检查时间是否在夏令时或冬令时切换期间
+function checkDSTTransition(dateObj, timezone) {
+    try {
+        // 获取前后一小时的时间
+        const prevHour = new Date(dateObj.getTime() - 3600000);
+        const nextHour = new Date(dateObj.getTime() + 3600000);
+        
+        // 创建时区格式化器
+        const formatter = new Intl.DateTimeFormat('en-US', {
+            timeZone: timezone,
+            hour: '2-digit',
+            hour12: false
+        });
+        
+        // 格式化三个时间点的小时
+        const prevHourFormatted = parseInt(formatter.format(prevHour));
+        const currentHourFormatted = parseInt(formatter.format(dateObj));
+        const nextHourFormatted = parseInt(formatter.format(nextHour));
+        
+        // 检查小时差异
+        const prevDiff = (currentHourFormatted - prevHourFormatted + 24) % 24;
+        const nextDiff = (nextHourFormatted - currentHourFormatted + 24) % 24;
+        
+        // 夏令时开始：跳过一小时（2:00 → 3:00）
+        if (prevDiff === 2 && nextDiff === 1) {
+            return {
+                isDST: true,
+                type: 'start',
+                message: '注意：此时间处于夏令时开始切换期间，时钟向前调整一小时'
+            };
+        }
+        // 夏令时结束：重复一小时（2:00 → 1:00）
+        else if (prevDiff === 1 && nextDiff === 2) {
+            return {
+                isDST: true,
+                type: 'end',
+                message: '注意：此时间处于夏令时结束切换期间，时钟向后调整一小时'
+            };
+        }
+        // 非特殊时间
+        return {
+            isDST: false,
+            type: 'none',
+            message: ''
+        };
+    } catch (e) {
+        console.error('检查夏令时出错:', e);
+        return {
+            isDST: false,
+            type: 'error',
+            message: ''
+        };
+    }
+}
+
 // 更新当前时间显示
 function updateCurrentTime() {
     const now = new Date();
@@ -270,6 +325,25 @@ function initEventListeners() {
                                            .find('.timezone-select .timezone-text')
                                            .data('timezone-id') || currentTimezone;
 
+            // 检查是否处于夏令时切换期间
+            const dstInfo = checkDSTTransition(date, selectedTimezone);
+            if (dstInfo.isDST) {
+                // 显示夏令时警告消息
+                const warningDiv = $('<div class="alert alert-warning" style="margin-top:10px;padding:5px 10px;"></div>')
+                    .text(dstInfo.message);
+                
+                // 移除之前的警告
+                $(this).closest('.row').find('.alert-warning').remove();
+                // 添加新警告
+                $(this).closest('.row').append(warningDiv);
+                
+                // 5秒后自动隐藏警告
+                setTimeout(() => warningDiv.fadeOut(), 5000);
+            } else {
+                // 移除之前的警告
+                $(this).closest('.row').find('.alert-warning').remove();
+            }
+
             // 使用选定的时区格式化日期
             $('.time1-bj').val(formatDateTime(date, selectedTimezone, timestampUnit === 'ms'));
         } catch(error) {
@@ -303,24 +377,26 @@ function initEventListeners() {
             const $timezoneSelect = $(this).closest('.row').find('.timezone-select');
             const timezone = $timezoneSelect.find('.timezone-text').data('timezone-id') || currentTimezone;
             
-            // 检查是否是夏令时切换的特殊时间
+            // 创建临时日期对象（本地时间，用于检查夏令时）
             const testDate = new Date(year, month - 1, day, hour, minute, second);
-            const prevHour = new Date(testDate.getTime() - 3600000); // 前一个小时
-            const nextHour = new Date(testDate.getTime() + 3600000); // 后一个小时
             
-            const formatter = new Intl.DateTimeFormat('en-US', {
-                timeZone: timezone,
-                hour: '2-digit',
-                hour12: false
-            });
-            
-            const currentHour = parseInt(formatter.format(testDate));
-            const prevFormattedHour = parseInt(formatter.format(prevHour));
-            const nextFormattedHour = parseInt(formatter.format(nextHour));
-            
-            // 检查是否在夏令时切换期间（跳过或重复的小时）
-            if (Math.abs(nextFormattedHour - prevFormattedHour) !== 2) {
-                console.warn('注意：此时间可能处于夏令时切换期间');
+            // 检查是否处于夏令时切换期间
+            const dstInfo = checkDSTTransition(testDate, timezone);
+            if (dstInfo.isDST) {
+                // 显示夏令时警告消息
+                const warningDiv = $('<div class="alert alert-warning" style="margin-top:10px;padding:5px 10px;"></div>')
+                    .text(dstInfo.message + '，可能影响转换精度');
+                
+                // 移除之前的警告
+                $(this).closest('.row').find('.alert-warning').remove();
+                // 添加新警告
+                $(this).closest('.row').append(warningDiv);
+                
+                // 5秒后自动隐藏警告
+                setTimeout(() => warningDiv.fadeOut(), 5000);
+            } else {
+                // 移除之前的警告
+                $(this).closest('.row').find('.alert-warning').remove();
             }
             
             // 通用的时区转换逻辑，适用于所有时区
