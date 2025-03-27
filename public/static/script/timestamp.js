@@ -341,39 +341,52 @@ function initEventListeners() {
                 console.warn('注意：此时间可能处于夏令时切换期间');
             }
             
-            // 使用 Intl.DateTimeFormat 来处理时区转换（包括夏令时）
-            const utcDate = new Date(Date.UTC(year, month - 1, day, hour, minute, second, milliseconds));
-            const fullFormatter = new Intl.DateTimeFormat('en-US', {
-                timeZone: timezone,
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit',
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit',
-                hour12: false,
-                fractionalSecondDigits: 3
-            });
-
-            // 使用 formatToParts 来获取转换后的时间部分
-            const parts = fullFormatter.formatToParts(utcDate);
-            const values = {};
-            parts.forEach(part => {
-                values[part.type] = parseInt(part.value);
-            });
-
-            // 构建本地时间
-            const localDate = new Date(
-                values.year,
-                values.month - 1,
-                values.day,
-                values.hour || 0,
-                values.minute || 0,
-                values.second || 0,
-                milliseconds
-            );
+            // 通用的时区转换逻辑，适用于所有时区
+            let timestamp;
             
-            const timestamp = localDate.getTime();
+            try {
+                // 步骤1: 获取时区偏移量
+                const formatter = new Intl.DateTimeFormat('en-US', {
+                    timeZone: timezone,
+                    timeZoneName: 'longOffset'
+                });
+                
+                // 使用当前日期获取时区偏移
+                const offsetInfo = formatter.formatToParts(new Date())
+                    .find(part => part.type === 'timeZoneName')?.value || '';
+                
+                // 解析偏移值 (如 GMT+08:00)
+                let offsetHours = 0;
+                const offsetMatch = offsetInfo.match(/GMT([+-])(\d{1,2})(?::(\d{2}))?/);
+                
+                if (offsetMatch) {
+                    const sign = offsetMatch[1] === '-' ? -1 : 1;
+                    const hours = parseInt(offsetMatch[2]);
+                    const minutes = offsetMatch[3] ? parseInt(offsetMatch[3]) : 0;
+                    offsetHours = sign * (hours + minutes / 60);
+                }
+                
+                // 步骤2: 构建ISO 8601格式的日期字符串，包含时区偏移
+                const offsetSign = offsetHours >= 0 ? '+' : '-';
+                const absOffsetHours = Math.abs(offsetHours);
+                const offsetHoursPart = Math.floor(absOffsetHours).toString().padStart(2, '0');
+                const offsetMinutesPart = Math.round((absOffsetHours % 1) * 60).toString().padStart(2, '0');
+                
+                // 构建带时区信息的ISO日期字符串
+                const isoString = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}T${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}:${second.toString().padStart(2, '0')}.${milliseconds.toString().padStart(3, '0')}${offsetSign}${offsetHoursPart}:${offsetMinutesPart}`;
+                
+                // 步骤3: 使用ISO字符串创建日期，JavaScript会自动处理时区转换
+                const dateWithOffset = new Date(isoString);
+                
+                // 步骤4: 获取正确的UNIX时间戳（毫秒）
+                timestamp = dateWithOffset.getTime();
+            } catch (e) {
+                console.error('时区转换错误:', e);
+                
+                // 备用方案: 简单处理为UTC时间
+                console.warn('使用备用UTC转换方法');
+                timestamp = Date.UTC(year, month - 1, day, hour, minute, second, milliseconds);
+            }
             
             // 检查转换结果是否有效
             if(isNaN(timestamp)) {
