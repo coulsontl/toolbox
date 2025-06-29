@@ -8,6 +8,7 @@
     "@codemirror/lang-javascript": "^6.x",
     "@codemirror/language": "^6.x",
     "@codemirror/legacy-modes": "^6.x",
+    "@codemirror/search": "^6.5.11",
     "@lezer/highlight": "^1.x",
     "@mantine/core": "^7.0.0",
     "@mantine/hooks": "^7.0.0",

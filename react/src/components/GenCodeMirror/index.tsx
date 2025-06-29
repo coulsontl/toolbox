@@ -39,6 +39,7 @@ import exportUtils from "../../utils/ExportUtils";
 import { createTheme } from '@uiw/codemirror-themes';
 import { tags as t } from '@lezer/highlight';
 import { EditorState } from '@codemirror/state'
+import { search } from '@codemirror/search'
 
 const myTheme = createTheme({
   theme: 'light',
@@ -222,6 +223,7 @@ export default (props: GenCodeMirrorProp) => {
           langPack,
           props.lineWrap ? EditorView.lineWrapping : null,
           EditorState.tabSize.of(2),
+          search(),
         ].filter(x => x != null) as any}
         theme={forgeObj.dark ? monokai : undefined} // githubLight
       />
