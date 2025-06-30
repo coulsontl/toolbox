@@ -8,6 +8,9 @@
         { "src": "/public/(.*)", "dest": "/public/$1" },
         { "src": "/(.*)", "dest": "/api/index.php" }
     ],
+    "builds": [
+        { "src": "vercel-build.sh", "use": "@vercel/static-build", "config": { "distDir": "public" } }
+    ],
     "env": {
         "APP_ENV": "production",
         "APP_DEBUG": "false"
