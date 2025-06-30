@@ -1,19 +1,23 @@
 <?php
-// 获取当前脚本的绝对路径
-$currentPath = __DIR__;
+// 显示所有错误
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+
+// 输出环境信息
+echo "<pre>";
+echo "Current directory: " . getcwd() . "\n";
+echo "Root directory listing:\n";
+var_dump(scandir('/var/task/user'));
+echo "\nAPI directory listing:\n";
+var_dump(scandir('/var/task/user/api'));
+echo "</pre>";
+exit;
+
+// 获取项目根目录
+$rootPath = dirname(__DIR__);
 
 // 设置应用目录
-define('APP_PATH', realpath($currentPath . '/../application/'));
+define('APP_PATH', $rootPath . '/application/');
 
 // 加载框架引导文件
-$thinkphpPath = realpath($currentPath . '/../thinkphp/start.php');
-
-if ($thinkphpPath) {
-    require $thinkphpPath;
-} else {
-    echo "ThinkPHP framework files not found. Paths checked:<br>";
-    echo "Current path: " . $currentPath . "<br>";
-    echo "Attempted ThinkPHP path: " . $currentPath . '/../thinkphp/start.php' . "<br>";
-    echo "Directory listing:<br>";
-    print_r(scandir($currentPath . '/..'));
-}
+require $rootPath . '/thinkphp/start.php';
