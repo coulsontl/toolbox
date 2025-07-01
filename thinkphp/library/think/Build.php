@@ -88,29 +88,14 @@ class Build
      */
     protected function buildFile($list)
     {
-        // 在Vercel环境中不创建文件
-        if (isset($_SERVER['VERCEL']) && $_SERVER['VERCEL'] === '1') {
-            return;
-        }
-        
         foreach ($list as $file) {
             if (!is_dir($this->basePath . dirname($file))) {
                 // 创建目录
-                try {
-                    mkdir($this->basePath . dirname($file), 0755, true);
-                } catch (\Exception $e) {
-                    // 忽略错误
-                    continue;
-                }
+                mkdir($this->basePath . dirname($file), 0755, true);
             }
 
             if (!is_file($this->basePath . $file)) {
-                try {
-                    file_put_contents($this->basePath . $file, 'php' == pathinfo($file, PATHINFO_EXTENSION) ? "<?php\n" : '');
-                } catch (\Exception $e) {
-                    // 忽略错误
-                    continue;
-                }
+                file_put_contents($this->basePath . $file, 'php' == pathinfo($file, PATHINFO_EXTENSION) ? "<?php\n" : '');
             }
         }
     }
@@ -126,21 +111,11 @@ class Build
      */
     public function module($module = '', $list = [], $namespace = 'app', $suffix = false)
     {
-        // 在Vercel环境中不创建模块
-        if (isset($_SERVER['VERCEL']) && $_SERVER['VERCEL'] === '1') {
-            return;
-        }
-        
         $module = $module ? $module : '';
 
         if (!is_dir($this->basePath . $module)) {
             // 创建模块目录
-            try {
-                mkdir($this->basePath . $module);
-            } catch (\Exception $e) {
-                // 忽略错误
-                return;
-            }
+            mkdir($this->basePath . $module);
         }
 
         if (basename($this->app->getRuntimePath() ?? '') != $module) {
@@ -214,11 +189,6 @@ class Build
      */
     public function buildRoute($suffix = false, $layer = '')
     {
-        // 在Vercel环境中不生成路由文件
-        if (isset($_SERVER['VERCEL']) && $_SERVER['VERCEL'] === '1') {
-            return '';
-        }
-        
         $namespace = $this->app->getNameSpace();
         $content   = '<?php ' . PHP_EOL . '//根据 Annotation 自动生成的路由规则';
 
@@ -245,12 +215,7 @@ class Build
         }
 
         $filename = $this->app->getRuntimePath() . 'build_route.php';
-        
-        try {
-            file_put_contents($filename, $content);
-        } catch (\Exception $e) {
-            // 忽略错误
-        }
+        file_put_contents($filename, $content);
 
         return $filename;
     }
@@ -436,26 +401,15 @@ class Build
     }
 
     /**
-     * 检查目录是否需要创建
+     * 创建目录
      * @access protected
      * @param  string $dirname 目录名称
-     * @return boolean
+     * @return void
      */
     protected function checkDirBuild($dirname)
     {
-        // 在Vercel环境中不创建目录
-        if (isset($_SERVER['VERCEL']) && $_SERVER['VERCEL'] === '1') {
-            return true;
-        }
-        
         if (!is_dir($dirname)) {
-            try {
-                mkdir($dirname, 0755, true);
-            } catch (\Exception $e) {
-                // 忽略错误
-                return false;
-            }
+            mkdir($dirname, 0755, true);
         }
-        return true;
     }
 }
