@@ -40,15 +40,23 @@ if (isset($_SERVER['VERCEL']) && $_SERVER['VERCEL'] === '1') {
     // 确保使用内存驱动
     define('USE_MEMORY_DRIVERS', true);
     
-    // 如果自定义类不存在，注册自动加载
+    // 加载必要的内存驱动类
     if (!class_exists('\think\template\driver\Memory')) {
         require_once __DIR__ . '/../thinkphp/library/think/template/driver/Memory.php';
+    }
+    
+    if (!class_exists('\think\storage\driver\Memory')) {
+        require_once __DIR__ . '/../thinkphp/library/think/storage/driver/Memory.php';
     }
     
     // 设置配置
     define('TEMPLATE_DRIVER_TYPE', 'Memory');
     define('CACHE_DRIVER_TYPE', 'Array');
     define('LOG_DRIVER_TYPE', 'Test');
+    define('STORAGE_TYPE', 'Memory');
+    
+    // 在运行时添加类映射
+    class_alias('\think\template\driver\Memory', '\think\template\driver\File');
 }
 
 // Return empty response for favicon.ico requests

@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2006-2018 http://thinkphp.cn All rights reserved.
+// | Copyright (c) 2006~2018 http://thinkphp.cn All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed ( http://www.apache.org/licenses/LICENSE-2.0 )
 // +----------------------------------------------------------------------
@@ -27,6 +27,12 @@ if (isset($_SERVER['VERCEL']) && $_SERVER['VERCEL'] === '1') {
     Config::set('cache.type', defined('CACHE_DRIVER_TYPE') ? CACHE_DRIVER_TYPE : 'File');
     // 设置日志类型
     Config::set('log.type', defined('LOG_DRIVER_TYPE') ? LOG_DRIVER_TYPE : 'File');
+    // 设置存储类型
+    Config::set('storage.type', defined('STORAGE_TYPE') ? STORAGE_TYPE : 'File');
+    // 禁用调试模式
+    Config::set('app_debug', false);
+    // 禁用应用Trace
+    Config::set('app_trace', false);
 }
 
 // 执行应用并响应
