@@ -12,6 +12,10 @@ error_reporting(E_ALL);
 // Set timezone
 date_default_timezone_set('Asia/Shanghai');
 
+// PHP 8.x compatibility fixes
+// Suppress deprecation warnings for PHP 8.x
+error_reporting(E_ALL & ~E_DEPRECATED);
+
 // Return empty response for favicon.ico requests
 if (isset($_SERVER['REQUEST_URI']) && $_SERVER['REQUEST_URI'] === '/favicon.ico') {
     header('Content-Type: image/x-icon');
@@ -31,6 +35,16 @@ if (isset($_SERVER['VERCEL']) && $_SERVER['VERCEL'] === '1') {
         if (isset($_SERVER['QUERY_STRING']) && !empty($_SERVER['QUERY_STRING'])) {
             $_SERVER['REQUEST_URI'] .= '?' . $_SERVER['QUERY_STRING'];
         }
+    }
+    
+    // Ensure HTTP_HOST is set
+    if (!isset($_SERVER['HTTP_HOST'])) {
+        $_SERVER['HTTP_HOST'] = $_SERVER['VERCEL_URL'] ?? 'localhost';
+    }
+    
+    // Fix for IP detection in Vercel
+    if (!isset($_SERVER['REMOTE_ADDR'])) {
+        $_SERVER['REMOTE_ADDR'] = $_SERVER['X-Forwarded-For'] ?? '127.0.0.1';
     }
 }
 
