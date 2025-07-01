@@ -46,6 +46,9 @@ if (isset($_SERVER['VERCEL']) && $_SERVER['VERCEL'] === '1') {
     if (!isset($_SERVER['REMOTE_ADDR'])) {
         $_SERVER['REMOTE_ADDR'] = $_SERVER['X-Forwarded-For'] ?? '127.0.0.1';
     }
+    
+    // 在Vercel环境中使用内存缓存
+    define('RUNTIME_MEMORY_CACHE', true);
 }
 
 // Continue to the main application

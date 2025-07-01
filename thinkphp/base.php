@@ -28,6 +28,11 @@ if (interface_exists('Psr\Log\LoggerInterface')) {
     {}
 }
 
+// 在Vercel环境中使用内存缓存
+if (defined('RUNTIME_MEMORY_CACHE') && RUNTIME_MEMORY_CACHE === true) {
+    \think\Config::set('template.compile_type', 'Memory');
+}
+
 // 注册类库别名
 Loader::addClassAlias([
     'App'      => facade\App::class,
