@@ -21,55 +21,15 @@ if (isset($_SERVER['VERCEL']) && $_SERVER['VERCEL'] === '1') {
     // 创建临时目录
     $tmp_dir = '/tmp/vercel_php_' . md5($_SERVER['VERCEL_URL'] ?? 'localhost');
     if (!is_dir($tmp_dir)) {
-        _original_mkdir($tmp_dir, 0777, true);
+        mkdir($tmp_dir, 0777, true);
     }
     
     // 设置ThinkPHP的临时目录
     define('THINK_PATH', __DIR__ . '/../thinkphp/');
     define('RUNTIME_PATH', $tmp_dir . '/');
     
-    // 重写mkdir函数，防止创建目录
-    if (!function_exists('_original_mkdir')) {
-        function _original_mkdir($pathname, $mode = 0777, $recursive = false, $context = null) {
-            if (func_num_args() === 4) {
-                return mkdir($pathname, $mode, $recursive, $context);
-            } else {
-                return mkdir($pathname, $mode, $recursive);
-            }
-        }
-        
-        function mkdir($pathname, $mode = 0777, $recursive = false, $context = null) {
-            // 只记录尝试创建目录的操作，但不实际执行
-            error_log("Attempted to create directory: $pathname (ignored in Vercel environment)");
-            return true; // 假装成功
-        }
-    }
-    
-    // 重写file_put_contents函数，防止写入文件
-    if (!function_exists('_original_file_put_contents')) {
-        function _original_file_put_contents($filename, $data, $flags = 0, $context = null) {
-            if (func_num_args() === 4) {
-                return file_put_contents($filename, $data, $flags, $context);
-            } else {
-                return file_put_contents($filename, $data, $flags);
-            }
-        }
-        
-        function file_put_contents($filename, $data, $flags = 0, $context = null) {
-            // 临时目录是可写的，允许写入
-            if (strpos($filename, '/tmp/') === 0) {
-                if (func_num_args() === 4) {
-                    return _original_file_put_contents($filename, $data, $flags, $context);
-                } else {
-                    return _original_file_put_contents($filename, $data, $flags);
-                }
-            }
-            
-            // 记录尝试写入文件的操作，但不实际执行
-            error_log("Attempted to write to file: $filename (ignored in Vercel environment)");
-            return strlen($data); // 返回数据长度，假装写入成功
-        }
-    }
+    // 直接修补template\driver\File类
+    class_alias('\think\template\driver\Memory', '\think\template\driver\File');
 }
 
 // Return empty response for favicon.ico requests
