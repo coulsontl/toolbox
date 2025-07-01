@@ -1,0 +1,9 @@
+/vendor
+/.git
+/.idea
+/runtime
+.env
+.DS_Store
+.gitignore
+composer.lock
+README.md 
