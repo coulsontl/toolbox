@@ -58,12 +58,23 @@ class File extends Driver
      */
     private function init()
     {
+        // 在Vercel环境中不创建目录
+        if (isset($_SERVER['VERCEL']) && $_SERVER['VERCEL'] === '1') {
+            return true;
+        }
+        
         // 创建项目缓存目录
         try {
             if (!is_dir($this->options['path']) && mkdir($this->options['path'], 0755, true)) {
                 return true;
             }
         } catch (\Exception $e) {
+            // 在Vercel环境中忽略文件系统错误
+            if (isset($_SERVER['VERCEL']) && $_SERVER['VERCEL'] === '1') {
+                return true;
+            }
+            // 其他环境抛出异常
+            throw $e;
         }
 
         return false;

@@ -63,7 +63,18 @@ class File
         $destination = $this->getMasterLogFile();
 
         $path = dirname($destination);
-        !is_dir($path) && mkdir($path, 0755, true);
+        if (!is_dir($path)) {
+            try {
+                mkdir($path, 0755, true);
+            } catch (\Exception $e) {
+                // 在Vercel环境中忽略文件系统错误
+                if (isset($_SERVER['VERCEL']) && $_SERVER['VERCEL'] === '1') {
+                    // 忽略错误
+                } else {
+                    throw $e;
+                }
+            }
+        }
 
         $info = [];
 

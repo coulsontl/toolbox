@@ -62,10 +62,25 @@ EOF;
         $classmapFile .= "];\n";
         $runtimePath = $app->getRuntimePath();
         if (!is_dir($runtimePath)) {
-            @mkdir($runtimePath, 0755, true);
+            try {
+                @mkdir($runtimePath, 0755, true);
+            } catch (\Exception $e) {
+                // 在Vercel环境中忽略文件系统错误
+                if (!isset($_SERVER['VERCEL']) || $_SERVER['VERCEL'] !== '1') {
+                    $output->writeln('<error>' . $e->getMessage() . '</error>');
+                }
+            }
         }
 
-        file_put_contents($runtimePath . 'classmap.php', $classmapFile);
+        try {
+            file_put_contents($runtimePath . 'classmap.php', $classmapFile);
+        } catch (\Exception $e) {
+            // 在Vercel环境中忽略文件系统错误
+            if (!isset($_SERVER['VERCEL']) || $_SERVER['VERCEL'] !== '1') {
+                $output->writeln('<error>' . $e->getMessage() . '</error>');
+                return;
+            }
+        }
 
         $output->writeln('<info>Succeed!</info>');
     }

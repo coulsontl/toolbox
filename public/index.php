@@ -12,6 +12,22 @@
 // [ 应用入口文件 ]
 namespace think;
 
+// 在Vercel环境中初始化临时目录
+if (isset($_SERVER['VERCEL']) && $_SERVER['VERCEL'] === '1') {
+    // 创建临时目录
+    $tmp_dir = '/tmp/vercel_php_' . md5($_SERVER['VERCEL_URL'] ?? 'localhost');
+    if (!is_dir($tmp_dir)) {
+        try {
+            mkdir($tmp_dir, 0777, true);
+        } catch (\Exception $e) {
+            // 忽略错误
+        }
+    }
+    
+    // 设置ThinkPHP的临时目录
+    define('RUNTIME_PATH', $tmp_dir . '/');
+}
+
 // 加载基础文件
 require __DIR__ . '/../thinkphp/base.php';
 

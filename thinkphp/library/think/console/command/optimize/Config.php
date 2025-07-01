@@ -37,10 +37,25 @@ class Config extends Command
         $content     = '<?php ' . PHP_EOL . $this->buildCacheContent($module);
         $runtimePath = App::getRuntimePath();
         if (!is_dir($runtimePath . $module)) {
-            @mkdir($runtimePath . $module, 0755, true);
+            try {
+                @mkdir($runtimePath . $module, 0755, true);
+            } catch (\Exception $e) {
+                // 在Vercel环境中忽略文件系统错误
+                if (!isset($_SERVER['VERCEL']) || $_SERVER['VERCEL'] !== '1') {
+                    $output->writeln('<error>' . $e->getMessage() . '</error>');
+                }
+            }
         }
 
-        file_put_contents($runtimePath . $module . 'init.php', $content);
+        try {
+            file_put_contents($runtimePath . $module . 'init.php', $content);
+        } catch (\Exception $e) {
+            // 在Vercel环境中忽略文件系统错误
+            if (!isset($_SERVER['VERCEL']) || $_SERVER['VERCEL'] !== '1') {
+                $output->writeln('<error>' . $e->getMessage() . '</error>');
+                return;
+            }
+        }
 
         $output->writeln('<info>Succeed!</info>');
     }

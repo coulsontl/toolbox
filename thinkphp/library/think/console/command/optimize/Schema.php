@@ -31,7 +31,14 @@ class Schema extends Command
     protected function execute(Input $input, Output $output)
     {
         if (!is_dir(App::getRuntimePath() . 'schema')) {
-            @mkdir(App::getRuntimePath() . 'schema', 0755, true);
+            try {
+                @mkdir(App::getRuntimePath() . 'schema', 0755, true);
+            } catch (\Exception $e) {
+                // 在Vercel环境中忽略文件系统错误
+                if (!isset($_SERVER['VERCEL']) || $_SERVER['VERCEL'] !== '1') {
+                    $output->writeln('<error>' . $e->getMessage() . '</error>');
+                }
+            }
         }
 
         if ($input->hasOption('module')) {
@@ -96,7 +103,14 @@ class Schema extends Command
             $info    = $class::getConnection()->getFields($table);
             $content .= var_export($info, true) . ';';
 
-            file_put_contents(App::getRuntimePath() . 'schema' . DIRECTORY_SEPARATOR . $dbName . '.' . $table . '.php', $content);
+            try {
+                file_put_contents(App::getRuntimePath() . 'schema' . DIRECTORY_SEPARATOR . $dbName . '.' . $table . '.php', $content);
+            } catch (\Exception $e) {
+                // 在Vercel环境中忽略文件系统错误
+                if (!isset($_SERVER['VERCEL']) || $_SERVER['VERCEL'] !== '1') {
+                    throw $e;
+                }
+            }
         }
     }
 
@@ -112,7 +126,15 @@ class Schema extends Command
             $content = '<?php ' . PHP_EOL . 'return ';
             $info    = Db::getConnection()->getFields($db . $table);
             $content .= var_export($info, true) . ';';
-            file_put_contents(App::getRuntimePath() . 'schema' . DIRECTORY_SEPARATOR . $dbName . $table . '.php', $content);
+            
+            try {
+                file_put_contents(App::getRuntimePath() . 'schema' . DIRECTORY_SEPARATOR . $dbName . $table . '.php', $content);
+            } catch (\Exception $e) {
+                // 在Vercel环境中忽略文件系统错误
+                if (!isset($_SERVER['VERCEL']) || $_SERVER['VERCEL'] !== '1') {
+                    throw $e;
+                }
+            }
         }
     }
 }
