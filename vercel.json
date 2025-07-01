@@ -22,6 +22,7 @@
         "ADMIN_USERNAME": "admin",
         "ADMIN_PASSWORD": "admin",
         "PHP_MEMORY_LIMIT": "256M",
-        "PHP_MAX_EXECUTION_TIME": "30"
+        "PHP_MAX_EXECUTION_TIME": "30",
+        "VERCEL_FILESYSTEM_DISABLE": "true"
     }
 }

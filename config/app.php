@@ -144,4 +144,7 @@ return [
     // 异常处理handle类 留空使用 \think\exception\Handle
     'exception_handle'       => '',
 
+    // 模板设置
+    'tpl_cache' => !defined('RUNTIME_MEMORY_CACHE'),
+
 ];
