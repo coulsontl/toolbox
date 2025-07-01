@@ -55,6 +55,11 @@ class File
      */
     public function save(array $log = [], $append = false)
     {
+        // 在Vercel环境中不保存日志
+        if (isset($_SERVER['VERCEL']) && $_SERVER['VERCEL'] === '1') {
+            return true;
+        }
+        
         $destination = $this->getMasterLogFile();
 
         $path = dirname($destination);

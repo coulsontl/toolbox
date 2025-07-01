@@ -16,20 +16,39 @@ date_default_timezone_set('Asia/Shanghai');
 // Suppress deprecation warnings for PHP 8.x
 error_reporting(E_ALL & ~E_DEPRECATED);
 
+// 创建内存缓存变量
+if (!isset($GLOBALS['_VERCEL_FILE_CACHE'])) {
+    $GLOBALS['_VERCEL_FILE_CACHE'] = [];
+}
+
 // 在Vercel环境中重写文件系统函数
 if (isset($_SERVER['VERCEL']) && $_SERVER['VERCEL'] === '1') {
     // 创建临时目录
     $tmp_dir = '/tmp/vercel_php_' . md5($_SERVER['VERCEL_URL'] ?? 'localhost');
     if (!is_dir($tmp_dir)) {
-        mkdir($tmp_dir, 0777, true);
+        try {
+            mkdir($tmp_dir, 0777, true);
+        } catch (\Exception $e) {
+            // 忽略错误，继续使用内存缓存
+        }
     }
     
     // 设置ThinkPHP的临时目录
     define('THINK_PATH', __DIR__ . '/../thinkphp/');
     define('RUNTIME_PATH', $tmp_dir . '/');
     
-    // 直接修补template\driver\File类
-    class_alias('\think\template\driver\Memory', '\think\template\driver\File');
+    // 确保使用内存驱动
+    define('USE_MEMORY_DRIVERS', true);
+    
+    // 如果自定义类不存在，注册自动加载
+    if (!class_exists('\think\template\driver\Memory')) {
+        require_once __DIR__ . '/../thinkphp/library/think/template/driver/Memory.php';
+    }
+    
+    // 设置配置
+    define('TEMPLATE_DRIVER_TYPE', 'Memory');
+    define('CACHE_DRIVER_TYPE', 'Array');
+    define('LOG_DRIVER_TYPE', 'Test');
 }
 
 // Return empty response for favicon.ico requests

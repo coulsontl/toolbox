@@ -96,6 +96,12 @@ class File extends Driver
             try {
                 mkdir($dir, 0755, true);
             } catch (\Exception $e) {
+                // 在Vercel环境下，忽略目录创建错误
+                if (isset($_SERVER['VERCEL']) && $_SERVER['VERCEL'] === '1') {
+                    // 忽略错误
+                } else {
+                    throw $e;
+                }
             }
         }
 
@@ -125,6 +131,34 @@ class File extends Driver
         $this->readTimes++;
 
         $filename = $this->getCacheKey($name);
+        
+        // 在Vercel环境中从内存获取缓存
+        if (isset($_SERVER['VERCEL']) && $_SERVER['VERCEL'] === '1') {
+            if (isset($GLOBALS['_VERCEL_FILE_CACHE'][$filename])) {
+                $cacheData = $GLOBALS['_VERCEL_FILE_CACHE'][$filename];
+                $content = $cacheData['data'];
+                $this->expire = null;
+                
+                if (false !== $content) {
+                    $expire = (int) substr($content, 8, 12);
+                    if (0 != $expire && time() > $cacheData['time'] + $expire) {
+                        // 缓存过期
+                        unset($GLOBALS['_VERCEL_FILE_CACHE'][$filename]);
+                        return $default;
+                    }
+                    
+                    $this->expire = $expire;
+                    $content = substr($content, 32);
+                    
+                    if ($this->options['data_compress'] && function_exists('gzcompress')) {
+                        // 启用数据压缩
+                        $content = gzuncompress($content);
+                    }
+                    return $this->unserialize($content);
+                }
+            }
+            return $default;
+        }
 
         if (!is_file($filename)) {
             return $default;
@@ -185,6 +219,21 @@ class File extends Driver
         }
 
         $data   = "<?php\n//" . sprintf('%012d', $expire) . "\n exit();?>\n" . $data;
+        
+        // 在Vercel环境中不写入文件系统
+        if (isset($_SERVER['VERCEL']) && $_SERVER['VERCEL'] === '1') {
+            // 使用内存变量存储缓存数据
+            if (!isset($GLOBALS['_VERCEL_FILE_CACHE'])) {
+                $GLOBALS['_VERCEL_FILE_CACHE'] = [];
+            }
+            $GLOBALS['_VERCEL_FILE_CACHE'][$filename] = [
+                'data' => $data,
+                'time' => time()
+            ];
+            isset($first) && $this->setTagItem($filename);
+            return true;
+        }
+        
         $result = file_put_contents($filename, $data);
 
         if ($result) {

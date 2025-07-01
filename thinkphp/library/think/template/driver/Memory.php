@@ -15,9 +15,8 @@ use think\Exception;
 
 class Memory
 {
-    // 使用静态变量存储模板缓存
-    protected static $cache = [];
     protected $cacheFile;
+    protected static $contents = [];
 
     /**
      * 写入编译缓存
@@ -28,8 +27,8 @@ class Memory
      */
     public function write($cacheFile, $content)
     {
-        // 使用文件名作为键，存储内容
-        self::$cache[$cacheFile] = $content;
+        // 将内容存储在静态数组中
+        self::$contents[$cacheFile] = $content;
     }
 
     /**
@@ -48,11 +47,11 @@ class Memory
             extract($vars, EXTR_OVERWRITE);
         }
 
-        // 从内存缓存中读取并执行
-        if (isset(self::$cache[$cacheFile])) {
-            eval('?>' . self::$cache[$cacheFile]);
+        // 从内存中读取模板
+        if (isset(self::$contents[$cacheFile])) {
+            eval('?>' . self::$contents[$cacheFile]);
         } else {
-            throw new Exception('cache not exists: ' . $cacheFile, 11603);
+            throw new Exception('Template not found: ' . $cacheFile);
         }
     }
 
@@ -65,6 +64,6 @@ class Memory
      */
     public function check($cacheFile, $cacheTime)
     {
-        return isset(self::$cache[$cacheFile]);
+        return isset(self::$contents[$cacheFile]);
     }
 } 
