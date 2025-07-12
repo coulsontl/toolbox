@@ -1,3 +1,7 @@
+# React 开发文件夹（不需要部署到 Vercel）
+/react
+
+# PHP 依赖和开发文件
 /vendor
 /.git
 /.idea
@@ -6,4 +10,14 @@
 .DS_Store
 .gitignore
 composer.lock
-README.md 
+README.md
+
+# Docker 相关文件
+/scripts
+Dockerfile
+
+# 本地开发脚本
+start.php
+
+# 大文件
+QQWry.dat
