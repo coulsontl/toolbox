@@ -12,6 +12,9 @@
 // [ 应用入口文件 ]
 namespace think;
 
+// PHP 8.1 兼容性设置 - 忽略弃用警告
+error_reporting(E_ALL & ~E_DEPRECATED & ~E_STRICT);
+
 // 加载基础文件
 require __DIR__ . '/../thinkphp/base.php';
 

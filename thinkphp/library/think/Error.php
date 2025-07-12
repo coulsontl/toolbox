@@ -31,7 +31,8 @@ class Error
      */
     public static function register()
     {
-        error_reporting(E_ALL);
+        // PHP 8.1 兼容性设置 - 忽略弃用警告
+        error_reporting(E_ALL & ~E_DEPRECATED & ~E_STRICT);
         set_error_handler([__CLASS__, 'appError']);
         set_exception_handler([__CLASS__, 'appException']);
         register_shutdown_function([__CLASS__, 'appShutdown']);

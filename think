@@ -12,6 +12,19 @@
 
 namespace think;
 
+// PHP 8.1 兼容性设置 - 忽略弃用警告
+error_reporting(E_ALL & ~E_DEPRECATED & ~E_STRICT);
+
+// 设置自定义错误处理器来处理 strpos 弃用警告
+set_error_handler(function($errno, $errstr, $errfile, $errline) {
+    // 忽略 strpos 弃用警告
+    if ($errno === E_DEPRECATED && strpos($errstr, 'strpos()') !== false) {
+        return true;
+    }
+    // 对于其他错误，使用默认处理
+    return false;
+}, E_DEPRECATED);
+
 // 加载基础文件
 require __DIR__ . '/thinkphp/base.php';
 
