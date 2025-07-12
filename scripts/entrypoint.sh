@@ -1,11 +1,7 @@
 #!/bin/sh
 set -e
 
-# Update admin.php config
-if [ ! -z "$username" ] && [ ! -z "$password" ]; then
-    sed -i "s/'username'.*.admin'/'username' => '$username'/" /www/toolbox/config/admin.php
-    sed -i "s/'password'.*.admin'/'password' => '$password'/" /www/toolbox/config/admin.php
-fi
+# 环境变量已经在 config/admin.php 中直接读取，无需 sed 替换
 
 # 启动 php-fpm
 php-fpm &
