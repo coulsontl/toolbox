@@ -24,6 +24,9 @@ class Lite extends Driver
         'path'   => '',
         'expire' => 0, // 等于 10*365*24*3600（10年）
     ];
+    
+    // 内存缓存
+    protected static $cache = [];
 
     /**
      * 架构函数
@@ -75,6 +78,23 @@ class Lite extends Driver
     public function get($name, $default = false)
     {
         $this->readTimes++;
+        
+        // 检查内存缓存
+        $cacheKey = $this->getCacheKey($name);
+        if (isset(self::$cache[$cacheKey])) {
+            // 判断是否过期
+            if (self::$cache[$cacheKey]['expire'] >= time()) {
+                return self::$cache[$cacheKey]['data'];
+            } else {
+                // 清除已经过期的内存缓存
+                unset(self::$cache[$cacheKey]);
+            }
+        }
+        
+        // 检查Vercel环境
+        if (isset($_SERVER['VERCEL']) && $_SERVER['VERCEL'] === '1') {
+            return $default;
+        }
 
         $filename = $this->getCacheKey($name);
 
@@ -84,11 +104,23 @@ class Lite extends Driver
 
             if ($mtime < time()) {
                 // 清除已经过期的文件
-                unlink($filename);
+                try {
+                    unlink($filename);
+                } catch (\Exception $e) {
+                    // 忽略错误
+                }
                 return $default;
             }
 
-            return include $filename;
+            $content = include $filename;
+            
+            // 缓存到内存
+            self::$cache[$cacheKey] = [
+                'data'   => $content,
+                'expire' => $mtime
+            ];
+            
+            return $content;
         } else {
             return $default;
         }
@@ -118,20 +150,40 @@ class Lite extends Driver
         }
 
         $filename = $this->getCacheKey($name);
+        
+        // 缓存到内存
+        self::$cache[$filename] = [
+            'data'   => $value,
+            'expire' => $expire
+        ];
+
+        // 在Vercel环境中不写入文件系统
+        if (isset($_SERVER['VERCEL']) && $_SERVER['VERCEL'] === '1') {
+            return true;
+        }
 
         if ($this->tag && !is_file($filename)) {
             $first = true;
         }
+        
+        try {
+            $ret = file_put_contents($filename, ("<?php return " . var_export($value, true) . ";"));
 
-        $ret = file_put_contents($filename, ("<?php return " . var_export($value, true) . ";"));
+            // 通过设置修改时间实现有效期
+            if ($ret) {
+                isset($first) && $this->setTagItem($filename);
+                touch($filename, $expire);
+            }
 
-        // 通过设置修改时间实现有效期
-        if ($ret) {
-            isset($first) && $this->setTagItem($filename);
-            touch($filename, $expire);
+            return $ret;
+        } catch (\Exception $e) {
+            // 在Vercel环境下，忽略文件写入错误
+            if (isset($_SERVER['VERCEL']) && $_SERVER['VERCEL'] === '1') {
+                return true;
+            } else {
+                throw $e;
+            }
         }
-
-        return $ret;
     }
 
     /**
@@ -179,8 +231,24 @@ class Lite extends Driver
     public function rm($name)
     {
         $this->writeTimes++;
-
-        return unlink($this->getCacheKey($name));
+        
+        $filename = $this->getCacheKey($name);
+        
+        // 从内存缓存中删除
+        if (isset(self::$cache[$filename])) {
+            unset(self::$cache[$filename]);
+        }
+        
+        // 在Vercel环境中不操作文件系统
+        if (isset($_SERVER['VERCEL']) && $_SERVER['VERCEL'] === '1') {
+            return true;
+        }
+        
+        try {
+            return unlink($filename);
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 
     /**
@@ -194,16 +262,49 @@ class Lite extends Driver
         if ($tag) {
             // 指定标签清除
             $keys = $this->getTagItem($tag);
+            
+            // 清除内存缓存
             foreach ($keys as $key) {
-                unlink($key);
+                if (isset(self::$cache[$key])) {
+                    unset(self::$cache[$key]);
+                }
+            }
+            
+            // 在Vercel环境中不操作文件系统
+            if (isset($_SERVER['VERCEL']) && $_SERVER['VERCEL'] === '1') {
+                return true;
+            }
+            
+            foreach ($keys as $key) {
+                try {
+                    unlink($key);
+                } catch (\Exception $e) {
+                    // 忽略错误
+                }
             }
 
             $this->rm($this->getTagKey($tag));
             return true;
         }
+        
+        // 清除所有内存缓存
+        self::$cache = [];
 
         $this->writeTimes++;
-
-        array_map("unlink", glob($this->options['path'] . ($this->options['prefix'] ? $this->options['prefix'] . DIRECTORY_SEPARATOR : '') . '*.php'));
+        
+        // 在Vercel环境中不操作文件系统
+        if (isset($_SERVER['VERCEL']) && $_SERVER['VERCEL'] === '1') {
+            return true;
+        }
+        
+        try {
+            $files = glob($this->options['path'] . ($this->options['prefix'] ? $this->options['prefix'] . DIRECTORY_SEPARATOR : '') . '*.php');
+            foreach ($files as $file) {
+                unlink($file);
+            }
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 }

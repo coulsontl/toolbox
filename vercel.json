@@ -1,0 +1,28 @@
+{
+    "functions": {
+        "api/index.php": {
+            "runtime": "vercel-php@0.7.3"
+        }
+    },
+    "routes": [
+        { "src": "/public/(.*)", "dest": "/public/$1" },
+        { "src": "/static/(.*)", "dest": "/public/static/$1" },
+        { "src": "/(.*)", "dest": "/api/index.php" }
+    ],
+    "env": {
+        "APP_ENV": "production",
+        "APP_DEBUG": "false",
+        "APP_TRACE": "false",
+        "DB_TYPE": "mysql",
+        "DB_HOST": "",
+        "DB_NAME": "",
+        "DB_USER": "",
+        "DB_PASS": "",
+        "DB_PORT": "3306",
+        "ADMIN_USERNAME": "admin",
+        "ADMIN_PASSWORD": "admin",
+        "PHP_MEMORY_LIMIT": "256M",
+        "PHP_MAX_EXECUTION_TIME": "30",
+        "VERCEL_FILESYSTEM_DISABLE": "true"
+    }
+}

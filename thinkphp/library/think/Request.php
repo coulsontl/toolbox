@@ -1298,7 +1298,7 @@ class Request
             if (function_exists('apache_request_headers') && $result = apache_request_headers()) {
                 $header = $result;
             } else {
-                $server = $this->server;
+                $server = $this->server ?: $_SERVER;
                 foreach ($server as $key => $val) {
                     if (0 === strpos($key, 'HTTP_')) {
                         $key          = str_replace('_', '-', strtolower(substr($key, 5)));
@@ -1319,7 +1319,7 @@ class Request
             return $this->header;
         }
 
-        $name = str_replace('_', '-', strtolower($name));
+        $name = str_replace('_', '-', strtolower((string)$name));
 
         return isset($this->header[$name]) ? $this->header[$name] : $default;
     }
@@ -1621,15 +1621,13 @@ class Request
      */
     public function isSsl()
     {
-        if ($this->server('HTTPS') && ('1' == $this->server('HTTPS') || 'on' == strtolower($this->server('HTTPS')))) {
+        if ($this->server('HTTPS') && ('1' == $this->server('HTTPS') || 'on' == strtolower((string)$this->server('HTTPS')))) {
             return true;
         } elseif ('https' == $this->server('REQUEST_SCHEME')) {
             return true;
         } elseif ('443' == $this->server('SERVER_PORT')) {
             return true;
         } elseif ('https' == $this->server('HTTP_X_FORWARDED_PROTO')) {
-            return true;
-        } elseif ($this->config['https_agent_name'] && $this->server($this->config['https_agent_name'])) {
             return true;
         }
 
@@ -1655,7 +1653,7 @@ class Request
     public function isAjax($ajax = false)
     {
         $value  = $this->server('HTTP_X_REQUESTED_WITH');
-        $result = 'xmlhttprequest' == strtolower($value) ? true : false;
+        $result = $value !== null && 'xmlhttprequest' == strtolower($value) ? true : false;
 
         if (true === $ajax) {
             return $result;
@@ -1747,7 +1745,7 @@ class Request
     {
         if ($this->server('HTTP_VIA') && stristr($this->server('HTTP_VIA'), "wap")) {
             return true;
-        } elseif ($this->server('HTTP_ACCEPT') && strpos(strtoupper($this->server('HTTP_ACCEPT')), "VND.WAP.WML")) {
+        } elseif ($this->server('HTTP_ACCEPT') && $this->server('HTTP_ACCEPT') !== null && strpos(strtoupper($this->server('HTTP_ACCEPT')), "VND.WAP.WML")) {
             return true;
         } elseif ($this->server('HTTP_X_WAP_PROFILE') || $this->server('HTTP_PROFILE')) {
             return true;

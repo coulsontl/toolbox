@@ -1,6 +1,6 @@
 <?php
 return array (
-  'username' => 'admin',
-  'password' => 'admin',
+  'username' => env('ADMIN_USERNAME', 'admin'),
+  'password' => env('ADMIN_PASSWORD', 'admin'),
 );
 ?>

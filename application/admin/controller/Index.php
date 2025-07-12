@@ -88,18 +88,31 @@ class Index extends Base
                 return json(['code'=>-1, 'msg'=>$validate->getError()]);
             }
 
+            // 检查旧密码是否正确
+            if(!empty($params['oldpwd']) && $config['password'] != $params['oldpwd']){
+                return json(['code'=>-1, 'msg'=>'旧密码不正确']);
+            }
+            
+            // 检查新密码是否一致
+            if(!empty($params['newpwd']) && !empty($params['newpwd2']) && $params['newpwd'] != $params['newpwd2']){
+                return json(['code'=>-1, 'msg'=>'两次新密码输入不一致']);
+            }
+            
+            // 在Vercel环境中，提示用户通过环境变量修改
+            if(isset($_SERVER['VERCEL']) && $_SERVER['VERCEL'] === '1'){
+                return json([
+                    'code'=>-1, 
+                    'msg'=>'在Vercel环境中，请通过Vercel控制台修改环境变量ADMIN_USERNAME和ADMIN_PASSWORD来更改管理员账号密码。'
+                ]);
+            }
+            
+            // 非Vercel环境下，仍然支持通过文件修改
             $confignew['username'] = $params['username'];
-            if(!empty($params['oldpwd']) && !empty($params['newpwd']) && !empty($params['newpwd2'])){
-                if($config['password'] != $params['oldpwd']){
-                    return json(['code'=>-1, 'msg'=>'旧密码不正确']);
-                }
-                if($params['newpwd'] != $params['newpwd2']){
-                    return json(['code'=>-1, 'msg'=>'两次新密码输入不一致']);
-                }
+            if(!empty($params['oldpwd']) && !empty($params['newpwd'])){
                 $confignew['password'] = $params['newpwd'];
             }
 
-            if($config['username'] != $confignew['username'] || isset($confignew['password']) && $config['password'] != $confignew['password']){
+            if($config['username'] != $confignew['username'] || (isset($confignew['password']) && $config['password'] != $confignew['password'])){
                 $webconfig = "<?php\n".'return ' . var_export($confignew, true) . ';'."\n";
                 file_put_contents('../config/admin.php', $webconfig);
                 return json(['code'=>0, 'msg'=>'修改成功，请重新登录。']);
@@ -109,7 +122,8 @@ class Index extends Base
         }
 
         return $this->fetch('', [
-            'config' => $config
+            'config' => $config,
+            'is_vercel' => isset($_SERVER['VERCEL']) && $_SERVER['VERCEL'] === '1'
         ]);
     }
 

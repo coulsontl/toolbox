@@ -63,6 +63,11 @@ function Fcurl($url, $ifpost = 0, $datafields = '', $cookiefile = '', $v = false
  */
 function deleteDir($path)
 {
+    // 在Vercel环境中不进行文件操作
+    if (isset($_SERVER['VERCEL']) && $_SERVER['VERCEL'] === '1') {
+        return true;
+    }
+    
     if (is_dir($path)) {
         //扫描一个目录内的所有目录和文件并返回数组
         $dirs = scandir($path);
@@ -75,14 +80,26 @@ function deleteDir($path)
                     //递归删除
                     deleteDir($sonDir);
                     //目录内的子目录和文件删除后删除空目录
-                    @rmdir($sonDir);
+                    try {
+                        @rmdir($sonDir);
+                    } catch (\Exception $e) {
+                        // 忽略错误
+                    }
                 } else {
                     //如果是文件直接删除
-                    @unlink($sonDir);
+                    try {
+                        @unlink($sonDir);
+                    } catch (\Exception $e) {
+                        // 忽略错误
+                    }
                 }
             }
         }
-        @rmdir($path);
+        try {
+            @rmdir($path);
+        } catch (\Exception $e) {
+            // 忽略错误
+        }
     }
 }
 

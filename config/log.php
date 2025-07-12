@@ -12,9 +12,13 @@
 // +----------------------------------------------------------------------
 // | 日志设置
 // +----------------------------------------------------------------------
+
+// 检测是否在Vercel环境中
+$log_type = defined('RUNTIME_MEMORY_CACHE') && RUNTIME_MEMORY_CACHE === true ? 'test' : 'File';
+
 return [
     // 日志记录方式，内置 file socket 支持扩展
-    'type'        => 'File',
+    'type'        => $log_type,
     // 日志保存目录
     'path'        => '',
     // 日志记录级别
@@ -26,5 +30,5 @@ return [
     // 最大日志文件数量
     'max_files'   => 0,
     // 是否关闭日志写入
-    'close'       => false,
+    'close'       => defined('RUNTIME_MEMORY_CACHE') && RUNTIME_MEMORY_CACHE === true ? true : false,
 ];

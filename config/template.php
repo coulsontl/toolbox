@@ -32,4 +32,8 @@ return [
     'taglib_begin' => '{',
     // 标签库标签结束标记
     'taglib_end'   => '}',
+    // 模板缓存
+    'tpl_cache'    => !defined('RUNTIME_MEMORY_CACHE'),
+    // 模板编译类型
+    'compile_type' => defined('RUNTIME_MEMORY_CACHE') && RUNTIME_MEMORY_CACHE === true ? 'Memory' : 'File',
 ];

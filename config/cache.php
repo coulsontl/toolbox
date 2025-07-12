@@ -13,9 +13,12 @@
 // | 缓存设置
 // +----------------------------------------------------------------------
 
+// 检测是否在Vercel环境中
+$cache_type = defined('RUNTIME_MEMORY_CACHE') && RUNTIME_MEMORY_CACHE === true ? 'array' : 'file';
+
 return [
     // 驱动方式
-    'type'   => 'File',
+    'type'   => $cache_type,
     // 缓存保存目录
     'path'   => '',
     // 缓存前缀
