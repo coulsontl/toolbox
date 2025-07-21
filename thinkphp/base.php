@@ -44,8 +44,7 @@ if (interface_exists('Psr\Log\LoggerInterface')) {
 
 // 在Vercel环境中使用内存缓存
 if (defined('RUNTIME_MEMORY_CACHE') && RUNTIME_MEMORY_CACHE === true) {
-    // 延迟到应用初始化时设置配置
-    // \think\Config::set('template.compile_type', 'Memory');
+    \think\Config::set('template.compile_type', 'Memory');
 }
 
 // 注册类库别名

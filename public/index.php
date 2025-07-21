@@ -22,24 +22,20 @@ require __DIR__ . '/../thinkphp/base.php';
 
 // 如果在Vercel环境中，设置相应的驱动
 if (isset($_SERVER['VERCEL']) && $_SERVER['VERCEL'] === '1') {
-    // 获取容器实例
-    $container = Container::getInstance();
-    $config = $container->get('config');
-
     // 设置模板引擎使用内存驱动
-    $config->set('template.type', defined('TEMPLATE_DRIVER_TYPE') ? TEMPLATE_DRIVER_TYPE : 'php');
+    Config::set('template.type', defined('TEMPLATE_DRIVER_TYPE') ? TEMPLATE_DRIVER_TYPE : 'File');
     // 禁用模板缓存
-    $config->set('template.tpl_cache', false);
+    Config::set('template.tpl_cache', false);
     // 设置缓存类型
-    $config->set('cache.type', defined('CACHE_DRIVER_TYPE') ? CACHE_DRIVER_TYPE : 'file');
+    Config::set('cache.type', defined('CACHE_DRIVER_TYPE') ? CACHE_DRIVER_TYPE : 'File');
     // 设置日志类型
-    $config->set('log.type', defined('LOG_DRIVER_TYPE') ? LOG_DRIVER_TYPE : 'file');
+    Config::set('log.type', defined('LOG_DRIVER_TYPE') ? LOG_DRIVER_TYPE : 'File');
     // 设置存储类型
-    $config->set('storage.type', defined('STORAGE_TYPE') ? STORAGE_TYPE : 'file');
+    Config::set('storage.type', defined('STORAGE_TYPE') ? STORAGE_TYPE : 'File');
     // 禁用调试模式
-    $config->set('app_debug', false);
+    Config::set('app_debug', false);
     // 禁用应用Trace
-    $config->set('app_trace', false);
+    Config::set('app_trace', false);
 }
 
 // 执行应用并响应

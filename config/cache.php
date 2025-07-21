@@ -14,7 +14,7 @@
 // +----------------------------------------------------------------------
 
 // 检测是否在Vercel环境中
-$cache_type = defined('RUNTIME_MEMORY_CACHE') && RUNTIME_MEMORY_CACHE === true ? 'file' : 'file';
+$cache_type = defined('RUNTIME_MEMORY_CACHE') && RUNTIME_MEMORY_CACHE === true ? 'array' : 'file';
 
 return [
     // 驱动方式

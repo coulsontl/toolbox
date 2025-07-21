@@ -576,40 +576,34 @@ class Container implements ArrayAccess, IteratorAggregate, Countable
         $this->delete($name);
     }
 
-    #[\ReturnTypeWillChange]
-    public function offsetExists($key)
+    public function offsetExists($key):bool
     {
         return $this->__isset($key);
     }
 
-    #[\ReturnTypeWillChange]
-    public function offsetGet($key)
+    public function offsetGet($key):mixed
     {
         return $this->__get($key);
     }
 
-    #[\ReturnTypeWillChange]
-    public function offsetSet($key, $value)
+    public function offsetSet($key, $value):void
     {
         $this->__set($key, $value);
     }
 
-    #[\ReturnTypeWillChange]
-    public function offsetUnset($key)
+    public function offsetUnset($key):void
     {
         $this->__unset($key);
     }
 
     //Countable
-    #[\ReturnTypeWillChange]
-    public function count()
+    public function count():int
     {
         return count($this->instances);
     }
 
     //IteratorAggregate
-    #[\ReturnTypeWillChange]
-    public function getIterator()
+    public function getIterator():IteratorAggregate
     {
         return new ArrayIterator($this->instances);
     }
