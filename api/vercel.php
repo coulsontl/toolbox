@@ -12,9 +12,9 @@ error_reporting(E_ALL);
 // Set timezone
 date_default_timezone_set('Asia/Shanghai');
 
-// PHP 8.x compatibility fixes
-// Suppress deprecation warnings for PHP 8.x
-error_reporting(E_ALL & ~E_DEPRECATED);
+// PHP compatibility fixes
+// Suppress deprecation warnings and notices for older ThinkPHP versions
+error_reporting(E_ALL & ~E_DEPRECATED & ~E_NOTICE);
 
 // 创建内存缓存变量
 if (!isset($GLOBALS['_VERCEL_FILE_CACHE'])) {

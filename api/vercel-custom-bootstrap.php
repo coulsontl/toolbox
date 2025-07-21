@@ -3,6 +3,11 @@
  * 针对Vercel环境的自定义启动文件
  */
 
+// PHP 兼容性设置
+error_reporting(E_ALL & ~E_DEPRECATED & ~E_NOTICE);
+ini_set('display_errors', '0');
+date_default_timezone_set('Asia/Shanghai');
+
 // 设置运行时目录为/tmp目录（Vercel中唯一可写的目录）
 $tmp_dir = '/tmp/vercel_php_runtime_' . md5($_SERVER['VERCEL_URL'] ?? $_SERVER['HTTP_HOST'] ?? 'localhost');
 if (!is_dir($tmp_dir)) {
