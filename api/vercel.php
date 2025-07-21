@@ -23,6 +23,10 @@ if (!isset($GLOBALS['_VERCEL_FILE_CACHE'])) {
 
 // 在Vercel环境中重写文件系统函数
 if (isset($_SERVER['VERCEL']) && $_SERVER['VERCEL'] === '1') {
+    // 提前定义内存缓存常量
+    if (!defined('RUNTIME_MEMORY_CACHE')) {
+        define('RUNTIME_MEMORY_CACHE', true);
+    }
     // 创建临时目录
     $tmp_dir = '/tmp/vercel_php_' . md5($_SERVER['VERCEL_URL'] ?? 'localhost');
     if (!is_dir($tmp_dir)) {
@@ -40,23 +44,13 @@ if (isset($_SERVER['VERCEL']) && $_SERVER['VERCEL'] === '1') {
     // 确保使用内存驱动
     define('USE_MEMORY_DRIVERS', true);
     
-    // 加载必要的内存驱动类
-    if (!class_exists('\think\template\driver\Memory')) {
-        require_once __DIR__ . '/../thinkphp/library/think/template/driver/Memory.php';
-    }
-    
-    if (!class_exists('\think\storage\driver\Memory')) {
-        require_once __DIR__ . '/../thinkphp/library/think/storage/driver/Memory.php';
-    }
-    
-    // 设置配置
-    define('TEMPLATE_DRIVER_TYPE', 'Memory');
-    define('CACHE_DRIVER_TYPE', 'Array');
-    define('LOG_DRIVER_TYPE', 'Test');
-    define('STORAGE_TYPE', 'Memory');
-    
-    // 在运行时添加类映射
-    class_alias('\think\template\driver\Memory', '\think\template\driver\File');
+    // 加载 Vercel 兼容的模板文件驱动
+    require_once __DIR__ . '/vercel-template-file-override.php';
+
+    // 设置环境变量
+    $_ENV['TEMPLATE_DRIVER_TYPE'] = 'File';
+    $_ENV['CACHE_DRIVER_TYPE'] = 'Array';
+    $_ENV['LOG_DRIVER_TYPE'] = 'Test';
 }
 
 // Return empty response for favicon.ico requests
@@ -91,7 +85,9 @@ if (isset($_SERVER['VERCEL']) && $_SERVER['VERCEL'] === '1') {
     }
     
     // 在Vercel环境中使用内存缓存
-    define('RUNTIME_MEMORY_CACHE', true);
+    if (!defined('RUNTIME_MEMORY_CACHE')) {
+        define('RUNTIME_MEMORY_CACHE', true);
+    }
 }
 
 // Continue to the main application
