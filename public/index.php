@@ -9,34 +9,70 @@
 // | Author: liu21st <liu21st@gmail.com>
 // +----------------------------------------------------------------------
 
-// [ 应用入口文件 ]
-namespace think;
+// [ 应用入口文件 - ThinkPHP 8.0 ]
 
-// PHP 8.1 兼容性设置 - 忽略弃用警告
+// PHP 8+ 兼容性设置
 error_reporting(E_ALL & ~E_DEPRECATED & ~E_STRICT);
 
-// 加载基础文件
-require __DIR__ . '/../thinkphp/base.php';
+// 加载 Composer 自动加载
+require __DIR__ . '/../vendor/autoload.php';
 
-// 支持事先使用静态方法设置Request对象和Config对象
+// 创建应用实例，传入根目录路径
+try {
+    $app = new \think\App(dirname(__DIR__) . '/');
+} catch (\Exception $e) {
+    die('App creation failed: ' . $e->getMessage());
+}
 
-// 如果在Vercel环境中，设置相应的驱动
+// 设置应用路径
+$app->setAppPath(__DIR__ . '/../app/');
+
+// 设置调试模式（本地开发）
+$app->config->set([
+    'app' => [
+        'debug' => true,
+        'trace' => true,
+    ],
+]);
+
+// 如果在Vercel环境中，设置相应的配置
 if (isset($_SERVER['VERCEL']) && $_SERVER['VERCEL'] === '1') {
-    // 设置模板引擎使用内存驱动
-    Config::set('template.type', defined('TEMPLATE_DRIVER_TYPE') ? TEMPLATE_DRIVER_TYPE : 'File');
-    // 禁用模板缓存
-    Config::set('template.tpl_cache', false);
-    // 设置缓存类型
-    Config::set('cache.type', defined('CACHE_DRIVER_TYPE') ? CACHE_DRIVER_TYPE : 'File');
-    // 设置日志类型
-    Config::set('log.type', defined('LOG_DRIVER_TYPE') ? LOG_DRIVER_TYPE : 'File');
-    // 设置存储类型
-    Config::set('storage.type', defined('STORAGE_TYPE') ? STORAGE_TYPE : 'File');
-    // 禁用调试模式
-    Config::set('app_debug', false);
-    // 禁用应用Trace
-    Config::set('app_trace', false);
+    // 设置运行时路径到可写目录
+    $tmp_dir = '/tmp/vercel_php_runtime_' . md5($_SERVER['VERCEL_URL'] ?? $_SERVER['HTTP_HOST'] ?? 'localhost');
+    if (!is_dir($tmp_dir)) {
+        @mkdir($tmp_dir, 0777, true);
+    }
+    $app->setRuntimePath($tmp_dir . '/');
+
+    // 配置 Vercel 兼容的设置
+    $app->config->set([
+        'cache' => [
+            'default' => 'array',
+            'stores' => [
+                'array' => [
+                    'type' => 'array',
+                ],
+            ],
+        ],
+        'log' => [
+            'default' => 'test',
+            'channels' => [
+                'test' => [
+                    'type' => 'test',
+                ],
+            ],
+        ],
+        'app' => [
+            'debug' => true,
+            'trace' => true,
+        ],
+    ]);
 }
 
 // 执行应用并响应
-Container::get('app')->run()->send();
+try {
+    $response = $app->http->run();
+    $response->send();
+} catch (\Exception $e) {
+    die('Application run failed: ' . $e->getMessage() . '<br>File: ' . $e->getFile() . '<br>Line: ' . $e->getLine());
+}

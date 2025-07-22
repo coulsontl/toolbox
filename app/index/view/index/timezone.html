@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>{$Think.config.web.worldtime.title}</title>
+    <meta name="applicable-device" content="pc,mobile" />
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta name="keywords" content="{$Think.config.web.worldtime.keywords}" />
+    <meta name="description" content="{$Think.config.web.worldtime.description}" />
+    <meta name="renderer" content="webkit" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <link rel="icon" href="/favicon.ico" mce_href="/favicon.ico" type="image/x-icon" />
+    <link href="/static/style/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="/static/style/tool.css" rel="stylesheet" type="text/css" />
+    <!--[if lt IE 9]><script src="//apps.bdimg.com/libs/html5shiv/3.7/html5shiv.min.js"></script><script src="//apps.bdimg.com/libs/respond.js/1.4.2/respond.min.js"></script><![endif]-->{:$Think.config.web.header}
+    <style>
+        .worldtime-container {
+            padding: 10px 20px 20px;
+        }
+        .worldtime-container h4 {
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+        .timezone-select {
+            margin-bottom: 20px;
+        }
+        .timezone-select select {
+            width: auto;
+            display: inline-block;
+        }
+        .timezone-select input {
+            width: 200px;
+            display: inline-block;
+            margin-left: 10px;
+        }
+        .time-table {
+            width: 100%;
+            margin-top: 20px;
+        }
+        .time-table th, .time-table td {
+            padding: 8px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        .time-table th {
+            background-color: #f5f5f5;
+        }
+        .tab-buttons {
+            margin-bottom: 20px;
+        }
+        .tab-buttons button {
+            margin-right: 10px;
+            padding: 5px 15px;
+            border: none;
+            cursor: pointer;
+        }
+        .tab-buttons button.convert {
+            background: #5cb85c;
+            color: white;
+        }
+        .tab-buttons button.convert.active {
+            background: #449d44;
+        }
+        .tab-buttons button.current {
+            background: #f0f0f0;
+            color: #333;
+        }
+        .tab-buttons button.current.active {
+            background: #e0e0e0;
+        }
+        .measure-text {
+            visibility: hidden;
+            position: absolute;
+            white-space: nowrap;
+            font-family: inherit;
+            font-size: inherit;
+            font-weight: inherit;
+        }
+    </style>
+</head>
+
+<body>
+    {include file="header" /}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="accordion" id="accordion2">
+                    <div class="accordion-group">
+                        <!-- <div><a href="https://www.aliyun.com/minisite/goods?userCode=eaborev5" target="_blank" rel="nofollow"><img src="http://zxgj.16400.cn/static/images/ali.jpg"></a></div> -->
+                        <ul class="nav nav-tabs hbflag">
+                            <li role="presentation"><a href="/tuya/">在线涂鸦画板</a></li>
+                            <li role="presentation"><a href="/shizhong/">在线时钟</a></li>
+                            <li role="presentation" class="active"><a href="/timezone/">时区在线转换</a></li>
+                            <li role="presentation"><a href="/capital/">世界各国首都查询</a></li>
+                            <li role="presentation"><a href="/currency/">世界各地货币查询</a></li>
+                            <li role="presentation"><a href="/areacode/">世界各国区号时差查询</a></li>
+                            <li role="presentation"><a href="/jieri/">世界节日查询</a></li>
+                            <li role="presentation" class="dropdown">
+                                <a class="dropdown-toggle" data-toggle="dropdown" href="javascript:;" role="button" aria-haspopup="true" aria-expanded="false">更多工具<span class="caret"> </span></a>
+                                <ul class="dropdown-menu">
+                                    <li role="presentation"><a href="/shaoshuminzu/">全国少数民族分布查询</a></li>
+                                    <li role="presentation"><a href="/chaodai/">中国历史朝代时间查询表</a></li>
+                                    <li role="presentation"><a href="/tesufuhao/">特殊符号大全</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <div class="panel">
+                            <div class="worldtime-container">
+                                <div class="timezone-select">
+                                    <select id="timezone-select" class="form-control">
+                                    </select>
+                                    <input type="text" id="current-time" class="form-control" placeholder="2024-12-31 22:38:35">
+                                </div>
+
+                                <div class="tab-buttons">
+                                    <button class="btn btn-success" onclick="convertTime()">转换其他时区时间</button>
+                                </div>
+
+                                <table class="time-table table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>洲</th>
+                                            <th>国家/城市</th>
+                                            <th>当地时间</th>
+                                            <th>UTC偏移量</th>
+                                            <th>地区时区</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="time-zones">
+                                    </tbody>
+                                </table>
+
+                                <div style="margin-top: 20px; color: #666; font-size: 13px;">
+                                    输入时间格式支持：<br>
+                                    YYYY-MM-DD HH:mm:ss  如：2021-05-20 09:30:20<br>
+                                    YYYY-MM-DD HH:mm     如：2021-05-20 09:30<br>
+                                    YYYY-MM-DD HH        如：2021-05-20 09<br>
+                                    YYYY-MM-DD LT        如：2021-05-20 9:30 AM<br>
+                                    YYYY-MM-DD h:mm:ss A 如：2021-05-20 9:30:20 AM<br>
+                                    <br>
+                                    YYYY/MM/DD HH:mm:ss  如：2021/05/20 09:30:20<br>
+                                    YYYY/MM/DD HH:mm     如：2021/05/20 09:30<br>
+                                    YYYY/MM/DD HH        如：2021/05/20 09<br>
+                                    YYYY/MM/DD LT        如：2021/05/20 9:30 AM<br>
+                                    YYYY/MM/DD h:mm:ss A 如：2021/05/20 9:30:20 AM
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <div class="accordion-group">
+                        <div class="in collapse bs-docs-demoexample">
+                            <h4>当前时区在线转换查询工具</h4>
+                            <p>当前时区在线转换工具提供当前时区在线转换,世界时间,世界实时时间,当前时区在线转换是几点,在线时区在线转换查询,世界时差查询,可实时显示当前世界各地的当前时间,提供世界主要城市的时间查询功能等。</p>
+                        </div>
+                    </div>
+                    <div class="accordion-group">
+                    </div> -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/script/jquery-1.11.3.min.js" type="text/javascript"></script>
+    <script src="/static/script/bootstrap.min.js" type="text/javascript"></script>
+    <script src="/static/script/tool.js" type="text/javascript"></script>
+    <script>
+        const timeZones = [
+            { continent: '世界标准时间', city: 'UTC', timezone: 'UTC' },
+            { continent: '亚洲', city: '中国/上海 Asia/Shanghai', timezone: 'Asia/Shanghai' },
+            { continent: '亚洲', city: '日本/东京 Asia/Tokyo', timezone: 'Asia/Tokyo' },
+            { continent: '亚洲', city: '韩国/首尔 Asia/Seoul', timezone: 'Asia/Seoul' },
+            { continent: '亚洲', city: '新加坡/新加坡 Asia/Singapore', timezone: 'Asia/Singapore' },
+            { continent: '亚洲', city: '泰国/曼谷 Asia/Bangkok', timezone: 'Asia/Bangkok' },
+            { continent: '亚洲', city: '尼泊尔/加德满都 Asia/Kathmandu', timezone: 'Asia/Kathmandu' },
+            { continent: '亚洲', city: '孟加拉/达卡 Asia/Dhaka', timezone: 'Asia/Dhaka' },
+            { continent: '亚洲', city: '印度/加尔各答 Asia/Kolkata', timezone: 'Asia/Kolkata' },
+            { continent: '亚洲', city: '斯里兰卡/科伦坡 Asia/Colombo', timezone: 'Asia/Colombo' },
+            { continent: '亚洲', city: '巴基斯坦/卡拉奇 Asia/Karachi', timezone: 'Asia/Karachi' },
+            { continent: '亚洲', city: '阿富汗/喀布尔 Asia/Kabul', timezone: 'Asia/Kabul' },
+            { continent: '亚洲', city: '阿联酋/迪拜 Asia/Dubai', timezone: 'Asia/Dubai' },
+            { continent: '亚洲', city: '伊拉克/巴格达 Asia/Baghdad', timezone: 'Asia/Baghdad' },
+            { continent: '非洲', city: '肯尼亚/内罗毕 Africa/Nairobi', timezone: 'Africa/Nairobi' },
+            { continent: '非洲', city: '埃及/开罗 Africa/Cairo', timezone: 'Africa/Cairo' },
+            { continent: '非洲', city: '尼日利亚/拉各斯 Africa/Lagos', timezone: 'Africa/Lagos' },
+            { continent: '欧洲', city: '俄罗斯/莫斯科 Europe/Moscow', timezone: 'Europe/Moscow' },
+            { continent: '欧洲', city: '土耳其/伊斯坦布尔 Europe/Istanbul', timezone: 'Europe/Istanbul' },
+            { continent: '欧洲', city: '罗马尼亚/布加勒斯特 Europe/Bucharest', timezone: 'Europe/Bucharest' },
+            { continent: '欧洲', city: '法国/巴黎 Europe/Paris', timezone: 'Europe/Paris' },
+            { continent: '欧洲', city: '德国/柏林 Europe/Berlin', timezone: 'Europe/Berlin' },
+            { continent: '欧洲', city: '英国/伦敦 Europe/London', timezone: 'Europe/London' },
+            { continent: '欧洲', city: '爱尔兰/都柏林 Europe/Dublin', timezone: 'Europe/Dublin' },
+            { continent: '美洲', city: '美国/纽约 America/New_York', timezone: 'America/New_York' },
+            { continent: '美洲', city: '美国/芝加哥 America/Chicago', timezone: 'America/Chicago' },
+            { continent: '美洲', city: '美国/博伊西 America/Boise', timezone: 'America/Boise' },
+            { continent: '美洲', city: '美国/洛杉矶 America/Los_Angeles', timezone: 'America/Los_Angeles' },
+            { continent: '美洲', city: '加拿大/温哥华 America/Vancouver', timezone: 'America/Vancouver' },
+            { continent: '美洲', city: '加拿大/温尼伯 America/Winnipeg', timezone: 'America/Winnipeg' },
+            { continent: '美洲', city: '加拿大/多伦多 America/Toronto', timezone: 'America/Toronto' },
+            { continent: '美洲', city: '巴西/圣保罗 America/Sao_Paulo', timezone: 'America/Sao_Paulo' },
+            { continent: '美洲', city: '秘鲁/利马 America/Lima', timezone: 'America/Lima' },
+            { continent: '美洲', city: '墨西哥/墨西哥城 America/Mexico_City', timezone: 'America/Mexico_City' },
+            { continent: '大洋洲', city: '新西兰/奥克兰 Pacific/Auckland', timezone: 'Pacific/Auckland' },
+            { continent: '大洋洲', city: '澳大利亚/悉尼 Australia/Sydney', timezone: 'Australia/Sydney' }
+        ];
+
+        // 获取时区偏移量和夏令时信息
+        function getTimezoneInfo(date, timezone) {
+            if (timezone === 'UTC') {
+                return {
+                    offset: '+00:00',
+                    isDST: false,
+                    timeSystem: '',
+                    tzAbbr: 'UTC'
+                };
+            }
+
+            try {
+                // 获取时区偏移量
+                const dtf = new Intl.DateTimeFormat('en-GB', {
+                    timeZone: timezone,
+                    timeZoneName: 'shortOffset',
+                    hour12: false
+                });
+                const formatted = dtf.format(date);
+                const match = formatted.match(/GMT([+-]\d{1,2}(?::\d{2})?)/);
+                let offset = match ? match[1] : '+00:00';
+
+                // 确保偏移量格式为 +HH:MM 或 -HH:MM
+                if (!offset.includes(':')) {
+                    offset = offset + ':00';
+                }
+                if (offset.length === 5) {  // 处理 +H:MM 的情况
+                    offset = offset[0] + '0' + offset.slice(1);
+                }
+
+                // 检查是否为夏令时
+                const longFormatter = new Intl.DateTimeFormat('en-US', {
+                    timeZone: timezone,
+                    timeZoneName: 'long'
+                });
+                const longFormatted = longFormatter.format(date);
+
+                // 检查当前时间是否为夏令时
+                const isDST = longFormatted.includes('Daylight');
+
+                // 获取时区缩写
+                const shortFormatter = new Intl.DateTimeFormat('en-US', {
+                    timeZone: timezone,
+                    timeZoneName: 'short'
+                });
+                const shortFormatted = shortFormatter.format(date);
+                const tzAbbr = shortFormatted.split(' ').pop();
+
+                // 检查是否使用夏令时制度
+                // 检查夏季和冬季的时区名称是否不同
+                const summerDate = new Date(date.getFullYear(), 6, 1); // 7月1日
+                const winterDate = new Date(date.getFullYear(), 0, 1); // 1月1日
+                
+                const summerFormatter = new Intl.DateTimeFormat('en-US', {
+                    timeZone: timezone,
+                    timeZoneName: 'long'
+                });
+                const winterFormatter = new Intl.DateTimeFormat('en-US', {
+                    timeZone: timezone,
+                    timeZoneName: 'long'
+                });
+                
+                const summerName = summerFormatter.format(summerDate);
+                const winterName = winterFormatter.format(winterDate);
+                
+                // 提取时区名称部分
+                const getSummerTimezoneName = summerName.split(',')[1].trim();
+                const getWinterTimezoneName = winterName.split(',')[1].trim();
+                
+                const usesDST = getSummerTimezoneName !== getWinterTimezoneName;
+
+                return {
+                    offset,
+                    isDST,
+                    timeSystem: usesDST ? (isDST ? '夏令时' : '冬令时') : '',
+                    tzAbbr
+                };
+            } catch (error) {
+                console.error(`Error processing timezone ${timezone}:`, error);
+                return {
+                    offset: '+00:00',
+                    isDST: false,
+                    timeSystem: '',
+                    tzAbbr: ''
+                };
+            }
+        }
+
+        // 格式化日期时间
+        function formatDateTime(date) {
+            const pad = (num) => String(num).padStart(2, '0');
+            return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+        }
+
+        // 解析时间字符串为Date对象
+        function parseTimeString(timeStr) {
+            // 尝试不同的时间格式
+            const formats = [
+                // YYYY-MM-DD HH:mm:ss 或 YYYY/MM/DD HH:mm:ss
+                /^(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})\s+(\d{1,2}):(\d{1,2}):(\d{1,2})$/,
+                // YYYY-MM-DD HH:mm 或 YYYY/MM/DD HH:mm
+                /^(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})\s+(\d{1,2}):(\d{1,2})$/,
+                // YYYY-MM-DD HH 或 YYYY/MM/DD HH
+                /^(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})\s+(\d{1,2})$/,
+                // YYYY-MM-DD LT 或 YYYY/MM/DD LT (9:30 AM/PM)
+                /^(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})\s+(\d{1,2}):(\d{1,2})\s+(AM|PM)$/i,
+                // YYYY-MM-DD h:mm:ss A 或 YYYY/MM/DD h:mm:ss A
+                /^(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})\s+(\d{1,2}):(\d{1,2}):(\d{1,2})\s+(AM|PM)$/i
+            ];
+
+            for (let format of formats) {
+                const match = timeStr.match(format);
+                if (match) {
+                    const now = new Date();
+                    let year = parseInt(match[1]);
+                    let month = parseInt(match[2]) - 1;
+                    let day = parseInt(match[3]);
+                    let hours = parseInt(match[4]);
+                    let minutes = match[5] ? parseInt(match[5]) : 0;
+                    let seconds = match[6] && !match[6].match(/AM|PM/i) ? parseInt(match[6]) : 0;
+                    
+                    // 处理 AM/PM
+                    const isPM = match[6]?.match(/PM/i) || match[7]?.match(/PM/i);
+                    if (isPM && hours < 12) hours += 12;
+                    if (!isPM && hours === 12) hours = 0;
+                    
+                    return new Date(year, month, day, hours, minutes, seconds);
+                }
+            }
+            return null;
+        }
+
+        function updateTimeTable(timestamp) {
+            let html = '';
+            let currentContinent = '';
+            
+            // 第一次遍历：计算每个洲的行数
+            const continentCounts = {};
+            timeZones.forEach(zone => {
+                continentCounts[zone.continent] = (continentCounts[zone.continent] || 0) + 1;
+            });
+            
+            // 第二次遍历：生成HTML
+            timeZones.forEach(zone => {
+                try {
+                    // 获取时区信息
+                    const date = new Date(timestamp);
+                    const { offset, timeSystem, tzAbbr } = getTimezoneInfo(date, zone.timezone);
+                    
+                    // 使用浏览器的API转换时间
+                    const options = {
+                        timeZone: zone.timezone,
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit',
+                        hour12: false
+                    };
+                    
+                    const localTimeStr = new Intl.DateTimeFormat('en-US', options).format(date);
+                    const [datePart, timePart] = localTimeStr.split(', ');
+                    const [month, day, year] = datePart.split('/');
+                    const [hours, minutes, seconds] = timePart.split(':');
+                    
+                    const localDate = new Date(
+                        parseInt(year),
+                        parseInt(month) - 1,
+                        parseInt(day),
+                        parseInt(hours),
+                        parseInt(minutes),
+                        parseInt(seconds)
+                    );
+                    
+                    let row = '<tr>';
+                    
+                    // 如果是新的洲，添加带有rowspan的单元格
+                    if (zone.continent !== currentContinent) {
+                        row += `<td rowspan="${continentCounts[zone.continent]}">${zone.continent}</td>`;
+                        currentContinent = zone.continent;
+                    }
+                    
+                    row += `
+                        <td>${zone.city}</td>
+                        <td>${formatDateTime(localDate)}</td>
+                        <td>${offset}${timeSystem ? ' (' + timeSystem + ')' : ''}</td>
+                        <td>${tzAbbr}</td>
+                    </tr>`;
+                    
+                    html += row;
+                } catch (error) {
+                    console.error(`Error processing timezone ${zone.timezone}:`, error);
+                    // 发生错误时显示一个占位行
+                    let row = '<tr>';
+                    if (zone.continent !== currentContinent) {
+                        row += `<td rowspan="${continentCounts[zone.continent]}">${zone.continent}</td>`;
+                        currentContinent = zone.continent;
+                    }
+                    row += `
+                        <td>${zone.city}</td>
+                        <td>--</td>
+                        <td>--</td>
+                        <td>--</td>
+                    </tr>`;
+                    html += row;
+                }
+            });
+            
+            $('#time-zones').empty().append(html);
+        }
+
+        function convertTime() {
+            updateTimes();
+        }
+
+        function updateTimes() {
+            let inputTime = $('#current-time').val();
+            const selectedZone = $('#timezone-select').val();
+            
+            if (inputTime) {
+                // 尝试解析输入的时间字符串
+                const inputDate = parseTimeString(inputTime);
+                if (!inputDate) {
+                    alert('请输入正确的时间格式，如：2024-12-31 22:38:35');
+                    return;
+                }
+
+                // 将用户输入的时间转换为时间戳
+                const timestamp = Date.UTC(
+                    inputDate.getFullYear(),
+                    inputDate.getMonth(),
+                    inputDate.getDate(),
+                    inputDate.getHours(),
+                    inputDate.getMinutes(),
+                    inputDate.getSeconds()
+                );
+
+                // 获取用户选择时区当前的偏移量（分钟）
+                const formatter = new Intl.DateTimeFormat('en-US', {
+                    timeZone: selectedZone,
+                    timeZoneName: 'longOffset',
+                    year: 'numeric'
+                });
+                const parts = formatter.formatToParts(inputDate);
+                const offsetPart = parts.find(part => part.type === 'timeZoneName');
+                const offset = offsetPart ? offsetPart.value.replace('GMT', '') : '+00:00';
+                const [offsetHours, offsetMinutes = '00'] = offset.split(':');
+                const totalOffsetMinutes = parseInt(offsetHours) * 60 + Math.sign(parseInt(offsetHours)) * parseInt(offsetMinutes);
+
+                // 调整时间戳以考虑时区偏移
+                const adjustedTimestamp = timestamp - totalOffsetMinutes * 60000;
+                
+                updateTimeTable(adjustedTimestamp);
+            } else {
+                // 如果没有输入时间，使用当前时间
+                const now = new Date();
+                $('#current-time').val(formatDateTime(now));
+                updateTimeTable(now.getTime());
+            }
+        }
+
+        $(document).ready(function() {
+            // 获取当前系统时区
+            const systemTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            
+            // 初始化时区选择器
+            const existingOptions = new Set();
+            
+            // 找到当前系统时区对应的完整信息
+            const systemZoneInfo = timeZones.find(zone => zone.timezone === systemTimeZone) || timeZones.find(zone => zone.timezone === 'Asia/Shanghai');
+            
+            // 添加当前系统时区作为第一个选项
+            $('#timezone-select').append(`<option value="${systemZoneInfo.timezone}">${systemZoneInfo.city}</option>`);
+            existingOptions.add(systemZoneInfo.timezone);
+            
+            // 添加其他时区
+            timeZones.forEach(zone => {
+                const value = zone.timezone;
+                // 只有当选项不存在时才添加
+                if (!existingOptions.has(value)) {
+                    $('#timezone-select').append(`<option value="${value}">${zone.city}</option>`);
+                    existingOptions.add(value);
+                }
+            });
+
+            // 添加用于测量文本宽度的span
+            $('body').append('<span class="measure-text"></span>');
+            
+            // 调整选择框宽度的函数
+            function adjustSelectWidth() {
+                const selectedText = $('#timezone-select option:selected').text();
+                $('.measure-text').text(selectedText);
+                const textWidth = $('.measure-text').width();
+                $('#timezone-select').width(textWidth + 30); // 30px for padding and arrow
+            }
+            
+            // 在选择改变时调整宽度
+            $('#timezone-select').on('change', adjustSelectWidth);
+            
+            // 初始化时设置为当前时区时间
+            const now = new Date();
+            $('#timezone-select').val(systemZoneInfo.timezone);
+            $('#current-time').val(formatDateTime(now));
+            updateTimeTable(now.getTime());
+            
+            // 初始化时调整宽度
+            adjustSelectWidth();
+            
+            $('.tab-buttons button').click(function() {
+                $(this).addClass('active');
+            });
+        });
+    </script>
+    {include file="nav" /}
+    {include file="link" /}
+    {include file="footer" /}
+</body>
+
+</html>

@@ -37,20 +37,14 @@ if (isset($_SERVER['VERCEL']) && $_SERVER['VERCEL'] === '1') {
         }
     }
     
-    // 设置ThinkPHP的临时目录
-    define('THINK_PATH', __DIR__ . '/../thinkphp/');
+    // 设置ThinkPHP 8.0的临时目录
     define('RUNTIME_PATH', $tmp_dir . '/');
     
     // 确保使用内存驱动
     define('USE_MEMORY_DRIVERS', true);
     
-    // 加载 Vercel 兼容的模板文件驱动
-    require_once __DIR__ . '/vercel-template-file-override.php';
-
-    // 设置环境变量
-    $_ENV['TEMPLATE_DRIVER_TYPE'] = 'File';
-    $_ENV['CACHE_DRIVER_TYPE'] = 'Array';
-    $_ENV['LOG_DRIVER_TYPE'] = 'Test';
+    // ThinkPHP 8.0 不需要特殊的模板驱动重写
+    // 框架已经内置了更好的兼容性处理
 }
 
 // Return empty response for favicon.ico requests
