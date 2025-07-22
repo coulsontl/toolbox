@@ -14,16 +14,16 @@
 // +----------------------------------------------------------------------
 
 return [
-    // 默认缓存驱动
-    'default' => 'file',
+    // 默认缓存驱动 - Vercel 环境使用内存缓存
+    'default' => isset($_ENV['VERCEL']) || isset($_SERVER['VERCEL']) ? 'array' : 'file',
 
     // 缓存连接方式配置
     'stores'  => [
         'file' => [
             // 驱动方式
             'type'       => 'File',
-            // 缓存保存目录
-            'path'       => '',
+            // 缓存保存目录 - 使用 /tmp 目录（Vercel 中唯一可写的目录）
+            'path'       => '/tmp/cache',
             // 缓存前缀
             'prefix'     => '',
             // 缓存有效期 0表示永久缓存

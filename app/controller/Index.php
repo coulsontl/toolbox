@@ -11,6 +11,15 @@ class Index
     {
         $data = array();
         $act = input('act', 'index');
+
+        // 如果是 admin，重定向到 Admin 控制器
+        if ($act === 'admin') {
+            return redirect('/admin');
+        }
+
+        // 检测是否在 Vercel 环境
+        $is_vercel = isset($_ENV['VERCEL']) || isset($_SERVER['VERCEL']);
+
         switch ($act) {
             case 'uuid':
                 $data['uuid_number'] = input('uuid_number', 1);
@@ -82,6 +91,25 @@ class Index
                 break;
         }
 
+        // 在 Vercel 环境中，如果模板加载失败，直接返回简化的 HTML
+        if ($is_vercel) {
+            try {
+                return View::fetch($act, $data);
+            } catch (\Exception $e) {
+                // Vercel 环境下的降级处理
+                if ($act === 'index') {
+                    return $this->getSimpleHomePage();
+                }
+                return json([
+                    'framework' => 'ThinkPHP 8.0 Toolbox',
+                    'action' => $act,
+                    'data' => $data,
+                    'message' => 'Vercel 环境 - 模板系统降级',
+                    'template_error' => $e->getMessage()
+                ]);
+            }
+        }
+
         try {
             return View::fetch($act, $data);
         } catch (\Exception $e) {
@@ -94,6 +122,14 @@ class Index
                 'template_error' => $e->getMessage()
             ]);
         }
+    }
+
+    /**
+     * 获取简化的首页 HTML（用于 Vercel 环境降级）
+     */
+    private function getSimpleHomePage()
+    {
+        return '页面被降级了！！！';
     }
 
     public function api()
@@ -118,10 +154,5 @@ class Index
         }
 
         return json($data);
-    }
-
-    public function hello($name = 'ThinkPHP8')
-    {
-        return 'hello,' . $name;
     }
 }

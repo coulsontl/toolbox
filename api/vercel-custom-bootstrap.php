@@ -29,30 +29,18 @@ $app = new \think\App(ROOT_PATH);
 $app->setAppPath(APP_PATH);
 $app->setRuntimePath(RUNTIME_PATH);
 
-// 配置 Vercel 兼容的设置
-$app->config->set([
-    'cache' => [
-        'default' => 'array',
-        'stores' => [
-            'array' => [
-                'type' => 'array',
-            ],
-        ],
-    ],
-    'log' => [
-        'default' => 'test',
-        'channels' => [
-            'test' => [
-                'type' => 'test',
-            ],
-        ],
-    ],
-    'view' => [
-        'type' => 'Think',
-        'view_path' => APP_PATH . 'view/',
-        'cache_path' => $tmp_dir . '/view/',
-    ],
-]);
+// 设置环境变量标识 Vercel 环境
+$_ENV['VERCEL'] = '1';
+$_SERVER['VERCEL'] = '1';
+
+// 确保缓存和日志目录存在
+$cache_dir = $tmp_dir . '/cache';
+$log_dir = $tmp_dir . '/log';
+$view_dir = $tmp_dir . '/view';
+
+if (!is_dir($cache_dir)) mkdir($cache_dir, 0777, true);
+if (!is_dir($log_dir)) mkdir($log_dir, 0777, true);
+if (!is_dir($view_dir)) mkdir($view_dir, 0777, true);
 
 // 执行应用
 $response = $app->http->run();

@@ -27,4 +27,7 @@ return [
     'error_message'    => '页面错误！请稍后再试～',
     // 显示错误信息
     'show_error_msg'   => false,
+
+    // Vercel 环境适配
+    'runtime_path'     => isset($_ENV['VERCEL']) || isset($_SERVER['VERCEL']) ? '/tmp/runtime/' : '',
 ];

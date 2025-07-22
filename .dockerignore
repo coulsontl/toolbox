@@ -1,22 +1,44 @@
 # 忽略 node_modules 目录
 node_modules/
+react/node_modules/
+
 # 忽略日志文件
 *.log
-# 忽略缓存文件
+
+# 忽略缓存和运行时文件
+runtime/cache/*
+runtime/log/*
+runtime/temp/*
 cache/
+
 # 忽略 IDE 配置文件
 .idea/
 .vscode/
+
 # 忽略 Git 相关文件
 .git/
 .github/
 .gitignore
+
 # 忽略 Docker 相关文件
 Dockerfile
 .dockerignore
+
 # 忽略测试文件
 tests/
+tp8_test/
+
 # 忽略临时文件
 tmp/
-# 忽略前端文件
-react/
+temp/
+
+# 忽略前端构建文件
+react/dist/
+react/build/
+
+# 忽略 Vercel 相关文件
+.vercel/
+
+# 忽略开发环境文件
+.env.local
+.env.development

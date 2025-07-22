@@ -1,14 +1,16 @@
 <?php
 
 namespace app\admin\controller;
-use think\Controller;
+use app\BaseController;
+use think\facade\Session;
+use think\facade\View;
 
-class Base extends Controller
+class Base extends BaseController
 {
     protected function isLogin()
     {
-        $session = session('admin');
-        if($session && $session === $this->getSession()) { 
+        $session = Session::get('admin');
+        if($session && $session === $this->getSession()) {
             return true;
         }
         return false;
@@ -23,7 +25,12 @@ class Base extends Controller
     protected function checkLogin()
     {
         if(!$this->isLogin()){
-            exit($this->redirect(url('login'), 302));
+            return redirect('/admin/login');
         }
+    }
+
+    protected function fetch($template = '', $vars = [])
+    {
+        return View::fetch($template, $vars);
     }
 }

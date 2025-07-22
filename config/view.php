@@ -22,4 +22,8 @@ return [
     'taglib_begin'  => '{',
     // 标签库标签结束标记
     'taglib_end'    => '}',
+    // 模板编译缓存路径 - Vercel 环境使用 /tmp
+    'cache_path'    => isset($_ENV['VERCEL']) || isset($_SERVER['VERCEL']) ? '/tmp/view' : '',
+    // 是否开启模板编译缓存 - Vercel 环境禁用
+    'tpl_cache'     => !(isset($_ENV['VERCEL']) || isset($_SERVER['VERCEL'])),
 ];

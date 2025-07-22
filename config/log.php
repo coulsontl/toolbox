@@ -14,13 +14,14 @@
 // +----------------------------------------------------------------------
 
 // 检测是否在Vercel环境中
-$log_type = defined('RUNTIME_MEMORY_CACHE') && RUNTIME_MEMORY_CACHE === true ? 'test' : 'File';
+$is_vercel = isset($_ENV['VERCEL']) || isset($_SERVER['VERCEL']);
+$log_type = $is_vercel ? 'test' : 'File';
 
 return [
     // 日志记录方式，内置 file socket 支持扩展
     'type'        => $log_type,
-    // 日志保存目录
-    'path'        => '',
+    // 日志保存目录 - Vercel 环境使用 /tmp
+    'path'        => $is_vercel ? '/tmp/log' : '',
     // 日志记录级别
     'level'       => [],
     // 单文件日志写入
