@@ -5,10 +5,13 @@ react/node_modules/
 # 忽略日志文件
 *.log
 
-# 忽略缓存和运行时文件
+# 忽略缓存和运行时文件（但保留目录结构）
 runtime/cache/*
 runtime/log/*
 runtime/temp/*
+!runtime/cache/.gitkeep
+!runtime/log/.gitkeep
+!runtime/temp/.gitkeep
 cache/
 
 # 忽略 IDE 配置文件

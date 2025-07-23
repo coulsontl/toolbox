@@ -51,6 +51,7 @@ docker run -d \
 - **PHP**: 8.3-fpm-alpine
 - **Web Server**: Nginx
 - **Framework**: ThinkPHP 8.1.3
+- **Dependency Manager**: Composer
 - **Architecture**: 单容器部署
 
 ## 特性
@@ -58,6 +59,8 @@ docker run -d \
 - ✅ PHP 8.3 支持
 - ✅ ThinkPHP 8.0 适配
 - ✅ Nginx 优化配置
+- ✅ Composer 依赖管理
+- ✅ 多阶段构建优化
 - ✅ 生产环境优化
 - ✅ 自动权限设置
 - ✅ 缓存目录管理

@@ -42,6 +42,8 @@ if (!is_dir($cache_dir)) mkdir($cache_dir, 0777, true);
 if (!is_dir($log_dir)) mkdir($log_dir, 0777, true);
 if (!is_dir($view_dir)) mkdir($view_dir, 0777, true);
 
+// 不设置缓存配置，让应用使用配置文件中的设置
+
 // 执行应用
 $response = $app->http->run();
 $response->send();

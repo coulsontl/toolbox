@@ -24,6 +24,6 @@ return [
     'taglib_end'    => '}',
     // 模板编译缓存路径 - Vercel 环境使用 /tmp
     'cache_path'    => isset($_ENV['VERCEL']) || isset($_SERVER['VERCEL']) ? '/tmp/view' : '',
-    // 是否开启模板编译缓存 - Vercel 环境禁用
-    'tpl_cache'     => !(isset($_ENV['VERCEL']) || isset($_SERVER['VERCEL'])),
+    // 是否开启模板编译缓存 - 在所有环境中都启用，但路径不同
+    'tpl_cache'     => true,
 ];

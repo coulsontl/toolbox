@@ -13,17 +13,20 @@
 // | 缓存设置
 // +----------------------------------------------------------------------
 
+// 检测是否在 Vercel 环境
+$is_vercel = isset($_ENV['VERCEL']) || isset($_SERVER['VERCEL']);
+
 return [
-    // 默认缓存驱动 - Vercel 环境禁用缓存
-    'default' => isset($_ENV['VERCEL']) || isset($_SERVER['VERCEL']) ? 'null' : 'file',
+    // 默认缓存驱动 - Vercel 环境使用空缓存，本地使用文件缓存
+    'default' => $is_vercel ? 'null' : 'file',
 
     // 缓存连接方式配置
     'stores'  => [
         'file' => [
             // 驱动方式
             'type'       => 'File',
-            // 缓存保存目录 - 使用 /tmp 目录（Vercel 中唯一可写的目录）
-            'path'       => '/tmp/cache',
+            // 缓存保存目录 - Vercel 环境使用 /tmp，本地使用默认
+            'path'       => $is_vercel ? '/tmp/cache' : '',
             // 缓存前缀
             'prefix'     => '',
             // 缓存有效期 0表示永久缓存
@@ -34,17 +37,8 @@ return [
             'serialize'  => [],
         ],
         'null' => [
-            // 驱动方式 - 空缓存驱动，适用于 Vercel 等无状态环境
-            'type'       => 'Null',
-            // 缓存前缀
-            'prefix'     => '',
-            // 缓存有效期 0表示永久缓存
-            'expire'     => 0,
-        ],
-        // 备用：如果支持 Array 驱动
-        'array' => [
-            // 驱动方式
-            'type'       => 'Array',
+            // 驱动方式 - 自定义空缓存驱动
+            'type'       => '\\app\\cache\\NullCache',
             // 缓存前缀
             'prefix'     => '',
             // 缓存有效期 0表示永久缓存

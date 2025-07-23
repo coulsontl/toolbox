@@ -10,10 +10,10 @@ mkdir -p runtime/cache runtime/log runtime/temp
 chown -R www-data:www-data runtime
 chmod -R 775 runtime
 
-# 如果存在 Composer，确保依赖已安装
-if [ -f "composer.json" ] && [ ! -d "vendor" ]; then
-    echo "Installing Composer dependencies..."
-    composer install --no-dev --optimize-autoloader
+# Composer 依赖已在构建时安装，这里只需要确保自动加载是最新的
+if [ -f "composer.json" ]; then
+    echo "Optimizing Composer autoloader..."
+    composer dump-autoload --optimize --no-dev
 fi
 
 # 清理缓存（如果需要）
