@@ -14,8 +14,8 @@
 // +----------------------------------------------------------------------
 
 return [
-    // 默认缓存驱动 - Vercel 环境使用内存缓存
-    'default' => isset($_ENV['VERCEL']) || isset($_SERVER['VERCEL']) ? 'array' : 'file',
+    // 默认缓存驱动 - Vercel 环境禁用缓存
+    'default' => isset($_ENV['VERCEL']) || isset($_SERVER['VERCEL']) ? 'null' : 'file',
 
     // 缓存连接方式配置
     'stores'  => [
@@ -33,9 +33,18 @@ return [
             // 序列化机制 例如 ['serialize', 'unserialize']
             'serialize'  => [],
         ],
+        'null' => [
+            // 驱动方式 - 空缓存驱动，适用于 Vercel 等无状态环境
+            'type'       => 'Null',
+            // 缓存前缀
+            'prefix'     => '',
+            // 缓存有效期 0表示永久缓存
+            'expire'     => 0,
+        ],
+        // 备用：如果支持 Array 驱动
         'array' => [
             // 驱动方式
-            'type'       => 'array',
+            'type'       => 'Array',
             // 缓存前缀
             'prefix'     => '',
             // 缓存有效期 0表示永久缓存
