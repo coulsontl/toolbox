@@ -27,11 +27,14 @@ try {
 // 设置应用路径
 $app->setAppPath(__DIR__ . '/../app/');
 
-// 设置调试模式（本地开发）
+// 设置调试模式（从环境变量读取）
+$debug = filter_var($_ENV['APP_DEBUG'] ?? $_SERVER['APP_DEBUG'] ?? 'false', FILTER_VALIDATE_BOOLEAN);
+$trace = filter_var($_ENV['APP_TRACE'] ?? $_SERVER['APP_TRACE'] ?? 'false', FILTER_VALIDATE_BOOLEAN);
+
 $app->config->set([
     'app' => [
-        'debug' => true,
-        'trace' => true,
+        'debug' => $debug,
+        'trace' => $trace,
     ],
 ]);
 
@@ -63,10 +66,22 @@ if (isset($_SERVER['VERCEL']) && $_SERVER['VERCEL'] === '1') {
             ],
         ],
         'app' => [
-            'debug' => true,
-            'trace' => true,
+            'debug' => $debug,
+            'trace' => $trace,
         ],
     ]);
+}
+
+// 调试信息
+if (isset($_GET['debug'])) {
+    echo "=== DEBUG INFO ===<br>";
+    echo "REQUEST_URI: " . ($_SERVER['REQUEST_URI'] ?? 'NOT SET') . "<br>";
+    echo "PATH_INFO: " . ($_SERVER['PATH_INFO'] ?? 'NOT SET') . "<br>";
+    echo "QUERY_STRING: " . ($_SERVER['QUERY_STRING'] ?? 'NOT SET') . "<br>";
+    echo "SCRIPT_NAME: " . ($_SERVER['SCRIPT_NAME'] ?? 'NOT SET') . "<br>";
+    echo "PHP_SELF: " . ($_SERVER['PHP_SELF'] ?? 'NOT SET') . "<br>";
+    echo "==================<br>";
+    exit;
 }
 
 // 执行应用并响应

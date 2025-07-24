@@ -62,7 +62,60 @@ php think run
 
 ThinkPHP遵循Apache2开源协议发布，并提供免费使用。
 
-## 1 docker
+## Docker 部署（推荐）
+
+### 快速开始
+
+1. **克隆项目**
+   ```bash
+   git clone <repository-url>
+   cd toolbox
+   ```
+
+2. **构建并启动**
+   ```bash
+   docker-compose up --build -d
+   ```
+
+3. **访问应用**
+   - 打开浏览器访问: http://localhost:8080
+
+### Docker 架构
+
+**单容器解决方案** - 包含NGINX + PHP-FPM：
+- **基础镜像**: PHP 8.3 FPM Alpine
+- **Web服务器**: NGINX (高性能)
+- **进程管理**: Supervisor
+- **端口映射**: 8080:80
+- **环境**: 生产模式
+- **自动重启**: 启用
+
+### 容器特性
+
+- ✅ **高性能**: NGINX + PHP-FPM 架构
+- ✅ **单容器**: 简化部署和管理
+- ✅ **进程监控**: Supervisor 管理服务
+- ✅ **路由修复**: 正确处理ThinkPHP路由
+- ✅ **安全配置**: 隐藏敏感目录
+- ✅ **静态文件优化**: Gzip压缩和缓存
+
+### 服务管理
+
+```bash
+# 查看服务状态
+docker-compose ps
+
+# 查看日志
+docker-compose logs
+
+# 重启服务
+docker-compose restart
+
+# 停止服务
+docker-compose down
+```
+
+## 1 docker（旧版本）
 
 设置用户名密码
 
