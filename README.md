@@ -14,25 +14,8 @@
 1. 登录到Vercel
 2. 点击"New Project"
 3. 导入你的Git仓库
-4. 配置环境变量:
-   - `DB_TYPE`: 数据库类型，如mysql
-   - `DB_HOST`: 数据库主机
-   - `DB_NAME`: 数据库名
-   - `DB_USER`: 数据库用户名
-   - `DB_PASS`: 数据库密码
-   - `DB_PORT`: 数据库端口，默认3306
-   - `ADMIN_USERNAME`: 管理员用户名，默认admin
-   - `ADMIN_PASSWORD`: 管理员密码，默认admin
-5. 点击"Deploy"
+4. 点击"Deploy"
 
-### 管理员账号配置
-
-在Vercel环境中，管理员账号和密码通过环境变量配置，无法通过页面修改。如需修改管理员账号密码，请在Vercel控制台中修改以下环境变量：
-
-- `ADMIN_USERNAME`: 管理员用户名
-- `ADMIN_PASSWORD`: 管理员密码
-
-修改环境变量后，需要重新部署应用才能生效。
 
 ### 注意事项
 
@@ -117,19 +100,10 @@ docker-compose down
 
 ## 1 docker（旧版本）
 
-设置用户名密码
-
-- username：用户名（默认值：admin）
-- password：密码（默认值：admin）
-
-后台管理地址：`http://192.168.3.34:8080/admin`
-
 ```bash
 docker run -d --restart always \
 	--name toolbox \
 	-p 8080:80 \
-	-e username=admin \
-	-e password=admin \
 	coulsontl/toolbox
 ```
 
@@ -137,15 +111,7 @@ docker run -d --restart always \
 
 ## 2 docker compose
 
-创建 `docker-compose.yml` 文件。如果不指定 `username` `password` ，默认用户名密码均为：`admin` 
-
-设置用户名密码
-
-- username：用户名（默认值：admin）
-- password：密码（默认值：admin）
-
-后台管理地址：`http://192.168.3.34:8080/admin`
-
+创建 `docker-compose.yml` 文件：
 
 ```yaml
 version: '3'
@@ -157,9 +123,6 @@ services:
     restart: unless-stopped
     ports:
       - "8080:80"
-    environment:
-      - username=admin
-      - password=admin
 ```
 
 ```bash

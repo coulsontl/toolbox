@@ -60,7 +60,6 @@ $command = sprintf(
 
 echo "启动命令: {$command}\n";
 echo "访问地址: http://localhost:{$port}\n";
-echo "管理后台: http://localhost:{$port}/admin\n";
 echo "按 Ctrl+C 停止服务器\n";
 echo "=================================\n\n";
 

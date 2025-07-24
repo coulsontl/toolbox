@@ -12,10 +12,6 @@ class Index
         $data = array();
         $act = input('act', 'index');
 
-        // 如果是 admin，重定向到 Admin 控制器
-        if ($act === 'admin') {
-            return redirect('/admin');
-        }
 
         // 检测是否在 Vercel 环境
         $is_vercel = isset($_ENV['VERCEL']) || isset($_SERVER['VERCEL']);
