@@ -34,7 +34,7 @@ $_ENV['VERCEL'] = '1';
 $_SERVER['VERCEL'] = '1';
 
 // 确保缓存和日志目录存在
-$cache_dir = $tmp_dir . '/cache';
+$cache_dir = '/tmp/cache';  // 使用固定的缓存目录
 $log_dir = $tmp_dir . '/log';
 $view_dir = $tmp_dir . '/view';
 

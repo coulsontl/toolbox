@@ -642,6 +642,6 @@
             "install-path": "../topthink/think-view"
         }
     ],
-    "dev": true,
+    "dev": false,
     "dev-package-names": []
 }
